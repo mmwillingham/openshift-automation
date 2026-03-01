@@ -1,0 +1,33 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: node-healthcheck-operator
+  namespace: open-cluster-management-policies
+spec:
+  subscription:
+    startingCSV: node-healthcheck-operator.v0.10.1
+  versions:
+    - node-healthcheck-operator.v0.10.1
+---
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: node-maintenance-operator
+  namespace: open-cluster-management-policies
+spec:
+  subscription:
+    startingCSV: node-maintenance-operator.v5.5.0
+  versions:
+    - node-maintenance-operator.v5.5.0
+---
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: fence-agents-remediation-operator
+  namespace: open-cluster-management-policies
+spec:
+  subscription:
+    startingCSV: fence-agents-remediation.v0.6.0
+  versions:
+    - fence-agents-remediation.v0.6.0
+---

@@ -1,0 +1,50 @@
+---
+apiVersion: fence-agents-remediation.medik8s.io/v1alpha1
+kind: FenceAgentsRemediationTemplate
+metadata:
+  name: far-template-mycluster01
+  namespace: openshift-workload-availability
+spec:
+  template:
+    spec:
+      agent: fence_redfish
+      nodeparameters:
+        '--ip':
+          worker01.example.com: '192.168.105.101'
+          worker02.example.com: '192.168.105.102'
+          worker03.example.com: '192.168.105.103'
+      sharedparameters:
+        '--systems-uri': '/redfish/v1/Systems/System.Embedded.1'
+        '--ssl-insecure': ''
+        '--username': ocp01
+        '--password': '<REDACTED>'
+        '--action': 'reboot'
+        '--ipport': '443'
+---
+apiVersion: remediation.medik8s.io/v1alpha1
+kind: NodeHealthCheck
+metadata:
+  name: worker-healthcheck
+spec:
+  unhealthyConditions:
+    - duration: 300s
+      status: 'False'
+      type: Ready
+    - duration: 300s
+      status: Unknown
+      type: Ready
+  minHealthy: 51%
+---
+apiVersion: remediation.medik8s.io/v1alpha1
+kind: NodeHealthCheck
+metadata:
+  name: control-plane-healthcheck
+spec:
+  unhealthyConditions:
+    - duration: 300s
+      status: 'False'
+      type: Ready
+    - duration: 300s
+      status: Unknown
+      type: Ready
+  minHealthy: 51%

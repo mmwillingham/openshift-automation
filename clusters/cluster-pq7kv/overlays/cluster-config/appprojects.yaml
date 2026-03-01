@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: virt
+  namespace: openshift-gitops
+spec:
+  description: "Virtualization Workloads"
+  clusterResourceWhitelist: [{group: '*', kind: '*'}]
+  destinations:
+    - namespace: 'openshift-virt-*'
+      server: https://kubernetes.default.svc
+    - namespace: 'openshift-cnv'
+      server: https://kubernetes.default.svc
+    - namespace: 'open-cluster-management-policies'
+      server: https://kubernetes.default.svc
+    - namespace: 'openshift-workload-availability'
+      server: https://kubernetes.default.svc
+  sourceRepos: ['https://github.com/mmwillingham/gitops-standards-repo']
+  roles:
+  - name: virt-admins
+    description: Access for Virt Admin Team
+    policies:
+    - p, proj:virt:virt-admins, applications, get, virt/*, allow
+    - p, proj:virt:virt-admins, applications, sync, virt/*, allow

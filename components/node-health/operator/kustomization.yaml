@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+
+  - namespace.yaml
+  - node-health-operatorgroup.yaml
+  - nhc-far-template-reader-binding.yaml
+  - nhc-far-template-reader-cluster-role.yaml
+  - node-healthcheck-operator.yaml
+  - node-maintenance-operator.yaml
+
+# Detect node failure
+# Hardware based (better for bare metal on-prem)
+  - fence-agents-remediation-operator.yaml
+
+# Software based
+#  - self-node-remediation-operator.yaml

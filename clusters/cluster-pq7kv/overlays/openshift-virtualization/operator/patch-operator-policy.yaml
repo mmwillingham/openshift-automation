@@ -1,0 +1,10 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: openshift-virtualization-operator
+  namespace: open-cluster-management-policies
+spec:
+  subscription:
+    startingCSV: kubevirt-hyperconverged-operator.v4.20.7
+  versions:
+    - kubevirt-hyperconverged-operator.v4.20.7

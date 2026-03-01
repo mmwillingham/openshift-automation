@@ -1,0 +1,59 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: node-healthcheck-operator
+  namespace: open-cluster-management-policies
+  annotations:
+    argocd.argoproj.io/sync-wave: "5" # This should be created after the operator group
+spec:
+  upgradeApproval: Automatic
+  complianceConfig:
+    catalogSourceUnhealthy: Compliant
+    deploymentsUnavailable: NonCompliant
+    upgradesAvailable: Compliant
+  complianceType: musthave
+  remediationAction: enforce
+  removalBehavior:
+    clusterServiceVersions: Delete
+    customResourceDefinitions: Keep
+    operatorGroups: DeleteIfUnused
+    subscriptions: Delete
+  severity: high
+  subscription:
+    channel: stable
+    name: node-healthcheck-operator
+    namespace: openshift-workload-availability
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    startingCSV: PATCHME
+  versions:
+    - PATCHME
+
+---
+# This removes the troublesome plugin
+# apiVersion: policy.open-cluster-management.io/v1
+# kind: ConfigurationPolicy
+# metadata:
+#   name: delete-remediation-plugin-resource
+#   namespace: open-cluster-management-policies
+# spec:
+#   remediationAction: enforce
+#   severity: medium
+#   object-templates:
+#     # 1. This deletes the actual ConsolePlugin object from the cluster
+#     - complianceType: mustnothave
+#       objectDefinition:
+#         apiVersion: console.openshift.io/v1
+#         kind: ConsolePlugin
+#         metadata:
+#           name: node-remediation-console-plugin
+#     # 2. This strips the plugin name from the global Console UI list
+#     - complianceType: mustnothave
+#       objectDefinition:
+#         apiVersion: operator.openshift.io/v1
+#         kind: Console
+#         metadata:
+#           name: cluster
+#         spec:
+#           plugins:
+#             - node-remediation-console-plugin

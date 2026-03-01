@@ -1,0 +1,20 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: shared-workload-availability
+  namespace: open-cluster-management-policies
+  annotations:
+    argocd.argoproj.io/sync-wave: "1" # This should be created before the operators
+spec:
+  remediationAction: enforce
+  severity: low
+  object-templates:
+    - complianceType: musthave
+      objectDefinition:
+        apiVersion: operators.coreos.com/v1
+        kind: OperatorGroup
+        metadata:
+          name: shared-workload-availability
+          namespace: openshift-workload-availability
+        spec:
+          targetNamespaces: [] # Node operators require All Namespaces
