@@ -8,12 +8,14 @@
 
 ### Steps
 ```
-
 ## Login to OpenShift from the target cluster
+oc login...
 ## validate
 oc whoami --show-server
+```
 
-# Prepare environment file (prepare.env)
+#### Prepare environment file (prepare.env)
+```
 cat << EOF > prepare.env
 # CLUSTER_NAME used in root-application.yaml and argocd.yaml
 export CLUSTER_NAME=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f2)
@@ -24,20 +26,26 @@ export GITOPS_REPO="https://github.com/mmwillingham/openshift-automation"
 export GITOPS_REPO_PATH="openshift-automation"
 EOF
 source prepare.env
+```
 
-# Validate variables and login
+#### Validate variables and login
+```
 echo CLUSTER_NAME: ${CLUSTER_NAME}
 echo CLUSTER_BASE_DOMAIN: ${CLUSTER_BASE_DOMAIN}
 # CLUSTER_BASE_DOMAIN = <CLUSTER_NAME>.<PLATFORM_BASE_DOMAIN> 
 echo PLATFORM_BASE_DOMAIN: ${PLATFORM_BASE_DOMAIN}
 echo GITOPS_REPO: ${GITOPS_REPO}
 echo GITOPS_REPO_PATH: ${GITOPS_REPO_PATH}
-
-# Clone repo
+```
+#### Clone repo
+```
+cd <your git folder>
 git clone ${GITOPS_REPO}
 cd ${GITOPS_REPO_PATH}
+```
 
-# Install GitOps
+#### Install GitOps
+```
 # Make sure you have already created clusters/<clustername>
 oc apply -f bootstrap/subscription.yaml
 oc apply -f bootstrap/cluster-rolebinding.yaml
@@ -47,13 +55,17 @@ oc get pods -n openshift-gitops-operator
 oc get argocd -n openshift-gitops
 # Don't proceed until the above are complete
 envsubst < bootstrap/argocd.yaml | oc apply -f -
-
-# Install root-application
-envsubst < bootstrap/root-application.yaml | oc apply -f -
-
 ```
-### New cluster
-#### Make changes in git repository
+
+#### Install root-application
+```
+envsubst < bootstrap/root-application.yaml | oc apply -f -
+```
+
+### Steps for adding cluster / application
+#### New cluster
+##### Make changes in git repository
+```
 1) Copy/paste from similar cluster
 2) Adjust path in argocd applications
     # e.g. clusters/<cluster-name>/apps/compliance-operator-app.yaml
@@ -61,8 +73,10 @@ envsubst < bootstrap/root-application.yaml | oc apply -f -
 3) Adjust clusters/<cluster-name>/apps/kustomization.yaml with desired applications
 4) Adjust overlay values if necessary
     # e.g. clusters/<cluster-name>/overlays/<component>
+```
 
-### New Application
+#### New Application
+```
 1) Will this application need patching? i.e. adjustments per cluster?
 Yes>
     Copy/paste from similar application and adjust as necessary
@@ -78,4 +92,5 @@ No>
         - cluster/<cluster-name>/apps/<component>
     Update
         - cluster/<cluster-name>/apps/kustomization.yaml
+```
 
