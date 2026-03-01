@@ -20,17 +20,15 @@
 #     server: https://kubernetes.default.svc
 #     namespace: default
 spec:
-  project: default
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    # 1. Point to the root so ALL folders (including components/) are visible
-    path: . 
+    path: . # ALWAYS point to root so 'components/' are visible
     plugin:
       name: setenv-cmp-plugin
       env:
-        # 2. Tell the plugin exactly which overlay to run Kustomize on
         - name: TARGET_KUSTOMIZE_DIR
+          # Tell it to build the specific overlay
           value: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
