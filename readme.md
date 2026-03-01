@@ -55,6 +55,14 @@ oc get pods -n openshift-gitops
 oc get pods -n openshift-gitops-operator
 oc get argocd -n openshift-gitops
 # Don't proceed until the above are complete
+```
+
+#### Update argocd object
+```
+# Verify variables are replaced correctly, which are all at bottom of file
+envsubst < bootstrap/argocd.yaml
+
+# Run it
 envsubst < bootstrap/argocd.yaml | oc apply -f -
 ```
 
@@ -65,8 +73,9 @@ envsubst < bootstrap/root-application.yaml | oc apply -f -
 
 #### Monitor
 ```
-# Console
-GitOps (argocd) console
+# GitOps Console (two options)
+# OpenShift Console > tic-tac-toe grid in the top right > Select "Cluster ArgoCD"
+# oc get route -n openshift-gitops openshift-gitops-server --template='https://{{.spec.host}}{{"\n"}}'
 
 # CLI
 oc get application -n openshift-gitops
@@ -94,13 +103,13 @@ Yes>
         - cluster/<cluster-name>/apps/<component>
         - cluster/<cluster-name>/overlays/<component>
     Update
-        - cluster/<cluster-name>/apps/kustomization.yaml
+        - cluster/<cluster-name>/kustomization.yaml
 
 No>
     Copy/paste from similar application and adjust as necessary
         - components/<component>
         - cluster/<cluster-name>/apps/<component>
     Update
-        - cluster/<cluster-name>/apps/kustomization.yaml
+        - cluster/<cluster-name>/kustomization.yaml
 ```
 
