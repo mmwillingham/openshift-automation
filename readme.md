@@ -37,6 +37,7 @@ echo PLATFORM_BASE_DOMAIN: ${PLATFORM_BASE_DOMAIN}
 echo GITOPS_REPO: ${GITOPS_REPO}
 echo GITOPS_REPO_PATH: ${GITOPS_REPO_PATH}
 ```
+
 #### Clone repo
 ```
 cd <your git folder>
