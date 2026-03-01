@@ -351,7 +351,11 @@ data:
         command:
           - sh
           - "-c"
-          - "set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub"
+          - |
+            # 1. Physically replace the variable string in all kustomization.yaml files
+            find . -name "kustomization.yaml" -exec sed -i "s/\${CLUSTER_NAME}/$CLUSTER_NAME/g" {} +
+            # 2. Run the standard kustomize build on the now-fixed files
+            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
