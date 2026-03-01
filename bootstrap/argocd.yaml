@@ -350,7 +350,10 @@ data:
           - sh
           - "-c"
           - |
-            find . -name "kustomization.yaml" -exec sed -i 's/\\\${CLUSTER_NAME}/'"$CLUSTER_NAME"'/g' {} +
+            # The sidecar will replace '${CLUSTER_NAME}' with the real name
+            find . -name "kustomization.yaml" -exec sed -i "s/\$${CLUSTER_NAME}/\$CLUSTER_NAME/g" {} +
+            
+            # Now kustomize runs against 'clusters/cluster-fl5kt'
             set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
       discover:
         find:
