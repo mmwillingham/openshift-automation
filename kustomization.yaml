@@ -1,8 +1,8 @@
-# kustomization.yaml (Root of Repo)
+# kustomization.yaml (at repo root)
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
 resources:
-  # Point to the overlays/cluster-config, NOT the whole cluster folder
-  # This avoids the 'apps/' folder which contains the Application YAML
+  # Targeting the specific overlay prevents Kustomize from 
+  # accidentally reading the Argo CD Application YAML in the 'apps/' folder
   - clusters/REPLACE_ME_CLUSTER/overlays/cluster-config

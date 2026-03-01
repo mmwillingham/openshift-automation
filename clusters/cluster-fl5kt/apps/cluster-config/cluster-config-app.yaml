@@ -23,12 +23,11 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: . # ALWAYS point to root so 'components/' are visible
+    path: . # Use the dot to clone the whole repo
     plugin:
       name: setenv-cmp-plugin
       env:
         - name: TARGET_KUSTOMIZE_DIR
-          # Tell it to build the specific overlay
           value: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc

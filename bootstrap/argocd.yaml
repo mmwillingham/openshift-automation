@@ -350,15 +350,16 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Fix the cluster name placeholder
+            # 1. Fix the cluster name
             find . -name "kustomization.yaml" -exec sed -i "s/REPLACE_ME_CLUSTER/$CLUSTER_NAME/g" {} +
             
-            # 2. Use the TARGET_KUSTOMIZE_DIR if provided (for child apps), 
-            # otherwise default to '.' (for the root bootstrap)
-            BUILD_PATH=${TARGET_KUSTOMIZE_DIR:-.}
+            # 2. Get the absolute path of where we are (the repo root)
+            REPO_ROOT=$(pwd)
+            TARGET_DIR=${TARGET_KUSTOMIZE_DIR:-.}
             
-            # 3. Build from the root context
-            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$BUILD_PATH" | envsub
+            # 3. Force Kustomize to build relative to the REPO_ROOT
+            # This ensures ../../../ components/ are found inside the repo
+            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$REPO_ROOT/$TARGET_DIR" | envsub
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
