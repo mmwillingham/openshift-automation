@@ -6,7 +6,7 @@
 2. Import cluster into ACM. Some operators are deployed with OperatorPolicies instead of subscriptions. Operator Policies are part of open-cluster-management. To get these, the cluster needs to be an ACM hub or managed cluster.
 ```
 
-### TL/DR steps
+### Steps
 ```
 
 ## Login to OpenShift from the target cluster
@@ -52,18 +52,30 @@ envsubst < bootstrap/argocd.yaml | oc apply -f -
 envsubst < bootstrap/root-application.yaml | oc apply -f -
 
 ```
-####
-New App Checklist for the Customer
-To  add a new application (e.g., logging-operator), follow these 3 steps:
+### New cluster
+#### Make changes in git repository
+1) Copy/paste from similar cluster
+2) Adjust path in argocd applications
+    # e.g. clusters/<cluster-name>/apps/compliance-operator-app.yaml
+    # path: clusters/<cluster-name>/overlays/compliance/operator
+3) Adjust clusters/<cluster-name>/apps/kustomization.yaml with desired applications
+4) Adjust overlay values if necessary
+    # e.g. clusters/<cluster-name>/overlays/<component>
 
-Check for Base: Does components/logging-operator exist? If not, create the base YAML there.
+### New Application
+1) Will this application need patching? i.e. adjustments per cluster?
+Yes>
+    Copy/paste from similar application and adjust as necessary
+        - components/<component>
+        - cluster/<cluster-name>/apps/<component>
+        - cluster/<cluster-name>/overlays/<component>
+    Update
+        - cluster/<cluster-name>/apps/kustomization.yaml
 
-Decide on Patching:
-No Patch? Create clusters/cluster-hqnl9/logging-app.yaml pointing to components/logging-operator.
-
-Need a Patch? Create a folder clusters/cluster-hqnl9/logging-operator/, add a kustomization.yaml and a overlays/ folder, then create the logging-app.yaml pointing to that local folder.
-
-Update Shopping List: Add - logging-app.yaml to the resources list in clusters/cluster-hqnl9/kustomization.yaml.
-
-Git Push: Once pushed, ArgoCD will automatically spawn the new tile.
+No>
+    Copy/paste from similar application and adjust as necessary
+        - components/<component>
+        - cluster/<cluster-name>/apps/<component>
+    Update
+        - cluster/<cluster-name>/apps/kustomization.yaml
 

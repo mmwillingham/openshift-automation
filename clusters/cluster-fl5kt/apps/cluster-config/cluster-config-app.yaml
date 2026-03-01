@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: node-health-operators
+  name: cluster-config
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: virt
+  project: default
   source:
     repoURL: https://github.com/mmwillingham/gitops-standards-repo
     targetRevision: HEAD
     # path:
     # point to components/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/<component-name> to apply cluster specific patch
-    path: clusters/cluster-pq7kv/overlays/node-health/operator
+    path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
     namespace: open-cluster-management-policies

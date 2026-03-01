@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: acm-operator
+  name: openshift-virtualization-operator
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -15,10 +15,10 @@ spec:
     # path:
     # point to components/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/<component-name> to apply cluster specific patch
-    path: clusters/cluster-pq7kv/overlays/acm/operator
+    path: clusters/cluster-fl5kt/overlays/openshift-virtualization/operator
   destination:
     server: https://kubernetes.default.svc
-    namespace: open-cluster-management
+    namespace: open-cluster-management-policies
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     retry:
