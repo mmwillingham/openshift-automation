@@ -350,17 +350,20 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Replace the plain word 'REPLACE_ME_CLUSTER' with the real name
+            # 1. Capture the ACTUAL root where the repo was cloned
+            REPO_ROOT=$(pwd)
+            
+            # 2. Fix the cluster name placeholders
             find . -name "kustomization.yaml" -exec sed -i "s/REPLACE_ME_CLUSTER/$CLUSTER_NAME/g" {} +
             
-            # 2. Use the TARGET_DIR variable from the App, or default to '.'
-            # For the Root App, this is '.'
-            # For the Child App, this is 'clusters/cluster-fl5kt/overlays/cluster-config'
+            # 3. Determine if we are building the root or a specific folder
+            # If TARGET_DIR is empty (Root App), use '.'
+            # If TARGET_DIR is set (Child App), use the variable
             BUILD_PATH=${TARGET_DIR:-.}
             
-            # 3. BUILD FROM THE REPO ROOT (.) but target the subfolder
-            # This is the ONLY way Kustomize can follow the ../../../ paths
-            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$BUILD_PATH" | envsub
+            # 4. EXECUTE USING THE FULL ABSOLUTE PATH
+            # This ensures ../../../ stays INSIDE the $REPO_ROOT
+            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$REPO_ROOT/$BUILD_PATH" | envsub
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
