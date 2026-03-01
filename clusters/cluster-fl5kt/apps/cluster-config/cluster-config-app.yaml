@@ -18,7 +18,7 @@ spec:
     path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
-    namespace: open-cluster-management-policies
+    namespace: default
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     retry:
