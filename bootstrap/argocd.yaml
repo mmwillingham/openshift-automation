@@ -332,6 +332,7 @@ spec:
         memory: 1Gi
     sharding: {}
 ---
+# Inside bootstrap/argocd.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -345,20 +346,13 @@ data:
       name: setenv-cmp-plugin
     spec:
       version: v1.0
-      init:
-        command: [sh, -c, 'echo "Initializing setenv-plugin-cmp..."']
       generate:
         command:
           - sh
           - "-c"
           - |
-            # 1. Physically replace the variable string in all kustomization.yaml files
-            find . -name "kustomization.yaml" -exec sed -i "s/\${CLUSTER_NAME}/$CLUSTER_NAME/g" {} +
-            # 2. Run the standard kustomize build on the now-fixed files
+            find . -name "kustomization.yaml" -exec sed -i "s/\$${CLUSTER_NAME}/\$CLUSTER_NAME/g" {} +
             set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
-      discover:
-        find:
-          command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
 ---
 apiVersion: v1
 kind: ConfigMap
