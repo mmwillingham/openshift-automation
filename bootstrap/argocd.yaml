@@ -332,6 +332,7 @@ spec:
         memory: 1Gi
     sharding: {}
 ---
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -350,17 +351,16 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Define the '$' using hex so local envsubst ignores it
-            DOLLAR_SIGN=$(printf '\x24')
+            # 1. We define the search string using a 'hex' dollar sign so 
+            # your local envsubst on your laptop ignores this line entirely.
+            # \x24 is the hexadecimal for '$'
+            SEARCH_PATTERN=$(printf '\x24{CLUSTER_NAME}')
             
-            # 2. Construct the literal string '${CLUSTER_NAME}' for sed to find
-            SEARCH_PATTERN="${DOLLAR_SIGN}{CLUSTER_NAME}"
+            # 2. We perform the replacement. In the sidecar, $CLUSTER_NAME 
+            # is already set to 'cluster-fl5kt', so it swaps the text.
+            find . -name "kustomization.yaml" -exec sed -i "s|${SEARCH_PATTERN}|${CLUSTER_NAME}|g" {} +
             
-            # 3. Find and replace in the root kustomization.yaml
-            # This turns 'clusters/${CLUSTER_NAME}' into 'clusters/cluster-fl5kt'
-            find . -name "kustomization.yaml" -exec sed -i "s/${SEARCH_PATTERN}/${CLUSTER_NAME}/g" {} +
-            
-            # 4. Build from the root (.) so 'components/' are visible
+            # 3. Build from the root (.) so 'components/' are visible.
             set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
       discover:
         find:
