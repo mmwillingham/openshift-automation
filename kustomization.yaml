@@ -1,5 +1,8 @@
+# kustomization.yaml (at repo root)
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
 resources:
-  - clusters/REPLACE_ME_CLUSTER/apps/cluster-config/cluster-config-app.yaml
+  # Do NOT point to clusters/REPLACE_ME_CLUSTER (it contains the apps folder)
+  # Point directly to the infrastructure overlay
+  - clusters/REPLACE_ME_CLUSTER/overlays/cluster-config

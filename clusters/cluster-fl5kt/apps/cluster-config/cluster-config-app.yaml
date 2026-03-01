@@ -1,42 +1,25 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: cluster-config
-#   namespace: openshift-gitops
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "0"
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   source:
-#     repoURL: https://github.com/mmwillingham/openshift-automation
-#     targetRevision: HEAD
-#     # path:
-#     # point to components/<component-name> if nothing needs to be patched
-#     # point to clusters/<cluster-name>/<component-name> to apply cluster specific patch
-#     path: clusters/cluster-fl5kt/overlays/cluster-config
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: default
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-config
+  namespace: openshift-gitops
 spec:
-  source:
-    repoURL: https://github.com/mmwillingham/openshift-automation
-    targetRevision: HEAD
-    path: . # Use the dot to clone the whole repo
-    plugin:
-      name: setenv-cmp-plugin
-      env:
-        - name: TARGET_DIR
-          value: clusters/REPLACE_ME_CLUSTER/overlays/cluster-config
+  project: default
+  sources:
+    - repoURL: https://github.com/mmwillingham/openshift-automation
+      targetRevision: HEAD
+      path: clusters/cluster-fl5kt/overlays/cluster-config
+    - repoURL: https://github.com/mmwillingham/openshift-automation
+      targetRevision: HEAD
+      path: .
   destination:
     server: https://kubernetes.default.svc
     namespace: default
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     retry:
-      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      limit: 5
       backoff:
-        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
-        factor: 2 # a factor to multiply the base duration after each failed retry
-        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy    
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

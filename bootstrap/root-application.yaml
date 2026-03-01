@@ -8,9 +8,8 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-#    path: clusters/${CLUSTER_NAME} # Keep in case this gets accidentally overwritten with clustername
-#    path: clusters/${CLUSTER_NAME}
-    path: .
+    # Point directly to the cluster folder
+    path: clusters/cluster-fl5kt 
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-gitops
