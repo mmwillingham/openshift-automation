@@ -1,44 +1,37 @@
-# This repo has been simplified to use only kustomize.
 ## NOTE: This configuration assumes a ArgoCD pull method. i.e. GitOps will be running on each cluster and pulling from repo.
 
 ### Prerequisites
 ```
-1. Create cluster config folder: ./clusters/<clustername>/kustomization.yaml
+1. Create cluster config folder with desired apps and overlays: ./clusters/<clustername>/
 2. Import cluster into ACM. Some operators are deployed with OperatorPolicies instead of subscriptions. Operator Policies are part of open-cluster-management. To get these, the cluster needs to be an ACM hub or managed cluster.
 ```
 
 ### TL/DR steps
 ```
 
+## Login to OpenShift from the target cluster
+## validate
+oc whoami --show-server
+
 # Prepare environment file (prepare.env)
 cat << EOF > prepare.env
-# Replace with your values
-export CLUSTER_NAME=
-export PLATFORM_BASE_DOMAIN=
-export CLUSTER_BASE_DOMAIN=<CLUSTER_NAME.PLATFORM_BASE_DOMAIN>
-export USERNAME="kubeadmin"
-export PASSWORD="<redacted>"
-export GITOPS_REPO="https://github.com/mmwillingham/gitops-standards-repo"
-export GITOPS_REPO_PATH="gitops-standards-repo"
+# CLUSTER_NAME used in root-application.yaml and argocd.yaml
+export CLUSTER_NAME=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f2)
+# The remaining used in argocd.yaml
+export CLUSTER_BASE_DOMAIN=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f2-)
+export PLATFORM_BASE_DOMAIN=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f3-)
+export GITOPS_REPO="https://github.com/mmwillingham/openshift-automation"
+export GITOPS_REPO_PATH="openshift-automation"
 EOF
-cat prepare.env
-
-# Adjust environment file and execute
 source prepare.env
 
 # Validate variables and login
 echo CLUSTER_NAME: ${CLUSTER_NAME}
-echo PLATFORM_BASE_DOMAIN: ${PLATFORM_BASE_DOMAIN}
 echo CLUSTER_BASE_DOMAIN: ${CLUSTER_BASE_DOMAIN}
-echo USERNAME: ${USERNAME}
-echo PASSWORD: ${PASSWORD}
+# CLUSTER_BASE_DOMAIN = <CLUSTER_NAME>.<PLATFORM_BASE_DOMAIN> 
+echo PLATFORM_BASE_DOMAIN: ${PLATFORM_BASE_DOMAIN}
 echo GITOPS_REPO: ${GITOPS_REPO}
 echo GITOPS_REPO_PATH: ${GITOPS_REPO_PATH}
-
-
-# Validate login
-oc login -u ${USERNAME} -p ${PASSWORD} https://api.${CLUSTER_BASE_DOMAIN}:6443
-oc whoami
 
 # Clone repo
 git clone ${GITOPS_REPO}
