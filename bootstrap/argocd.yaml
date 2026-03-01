@@ -350,17 +350,15 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Fix the cluster name placeholder as we did before
+            # 1. Fix the cluster name placeholder
             find . -name "kustomization.yaml" -exec sed -i "s/REPLACE_ME_CLUSTER/$CLUSTER_NAME/g" {} +
             
-            # 2. Determine which folder to build. 
-            # If the App doesn't specify 'ARGOCD_APP_SOURCE_PATH', use root '.'
-            # We use the built-in Argo variable to know where the App *wanted* to be.
-            TARGET_FOLDER=${ARGOCD_APP_SOURCE_PATH:-.}
+            # 2. Use the TARGET_KUSTOMIZE_DIR if provided (for child apps), 
+            # otherwise default to '.' (for the root bootstrap)
+            BUILD_PATH=${TARGET_KUSTOMIZE_DIR:-.}
             
-            # 3. Build from the actual root but target the specific folder.
-            # This allows Kustomize to see 'components/' because it's a sibling, not a parent.
-            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$TARGET_FOLDER" | envsub
+            # 3. Build from the root context
+            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$BUILD_PATH" | envsub
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
