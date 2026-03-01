@@ -332,7 +332,6 @@ spec:
         memory: 1Gi
     sharding: {}
 ---
-# Inside bootstrap/argocd.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -351,8 +350,11 @@ data:
           - sh
           - "-c"
           - |
-            find . -name "kustomization.yaml" -exec sed -i "s/\\\${CLUSTER_NAME}/\$CLUSTER_NAME/g" {} +
+            find . -name "kustomization.yaml" -exec sed -i 's/\\\${CLUSTER_NAME}/'"$CLUSTER_NAME"'/g' {} +
             set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
+      discover:
+        find:
+          command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
 ---
 apiVersion: v1
 kind: ConfigMap
