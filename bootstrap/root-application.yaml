@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mmwillingham/gitops-standards-repo
+    repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
 #    path: clusters/${CLUSTER_NAME} # Keep in case this gets accidentally overwritten with clustername
     path: clusters/${CLUSTER_NAME}

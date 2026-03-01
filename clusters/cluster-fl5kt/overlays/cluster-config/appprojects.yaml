@@ -16,7 +16,7 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: 'openshift-workload-availability'
       server: https://kubernetes.default.svc
-  sourceRepos: ['https://github.com/mmwillingham/gitops-standards-repo']
+  sourceRepos: ['https://github.com/mmwillingham/openshift-automation']
   roles:
   - name: virt-admins
     description: Access for Virt Admin Team

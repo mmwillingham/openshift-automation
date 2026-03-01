@@ -10,7 +10,7 @@ metadata:
 spec:
   project: virt
   source:
-    repoURL: https://github.com/mmwillingham/gitops-standards-repo
+    repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # path:
     # point to components/<component-name> if nothing needs to be patched

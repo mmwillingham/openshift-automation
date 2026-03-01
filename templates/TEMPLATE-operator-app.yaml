@@ -13,7 +13,7 @@ spec:
   # For access by virt-admins--> project: virt
   project: PROJECT
   source:
-    repoURL: https://github.com/mmwillingham/gitops-standards-repo
+    repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
 
     # If nothing to change--> path: components/<component-name>

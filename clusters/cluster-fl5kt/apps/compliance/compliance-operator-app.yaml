@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mmwillingham/gitops-standards-repo
+    repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     path: clusters/cluster-fl5kt/overlays/compliance/operator # Points to local overlay
   destination:

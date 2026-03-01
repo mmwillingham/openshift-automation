@@ -63,6 +63,15 @@ envsubst < bootstrap/argocd.yaml | oc apply -f -
 envsubst < bootstrap/root-application.yaml | oc apply -f -
 ```
 
+#### Monitor
+```
+# Console
+GitOps (argocd) console
+
+# CLI
+oc get application -n openshift-gitops
+
+
 ### Steps for adding cluster / application
 #### New cluster
 ##### Make changes in git repository
