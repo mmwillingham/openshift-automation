@@ -27,8 +27,8 @@ spec:
     plugin:
       name: setenv-cmp-plugin
       env:
-        - name: TARGET_KUSTOMIZE_DIR
-          value: clusters/cluster-fl5kt/overlays/cluster-config
+        - name: TARGET_DIR
+          value: clusters/REPLACE_ME_CLUSTER/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
     namespace: default

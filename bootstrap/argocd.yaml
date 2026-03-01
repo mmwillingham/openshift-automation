@@ -350,16 +350,17 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Fix the cluster name
+            # 1. Replace the plain word 'REPLACE_ME_CLUSTER' with the real name
             find . -name "kustomization.yaml" -exec sed -i "s/REPLACE_ME_CLUSTER/$CLUSTER_NAME/g" {} +
             
-            # 2. Get the absolute path of where we are (the repo root)
-            REPO_ROOT=$(pwd)
-            TARGET_DIR=${TARGET_KUSTOMIZE_DIR:-.}
+            # 2. Use the TARGET_DIR variable from the App, or default to '.'
+            # For the Root App, this is '.'
+            # For the Child App, this is 'clusters/cluster-fl5kt/overlays/cluster-config'
+            BUILD_PATH=${TARGET_DIR:-.}
             
-            # 3. Force Kustomize to build relative to the REPO_ROOT
-            # This ensures ../../../ components/ are found inside the repo
-            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$REPO_ROOT/$TARGET_DIR" | envsub
+            # 3. BUILD FROM THE REPO ROOT (.) but target the subfolder
+            # This is the ONLY way Kustomize can follow the ../../../ paths
+            set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins "$BUILD_PATH" | envsub
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
