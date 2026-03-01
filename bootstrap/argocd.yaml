@@ -350,11 +350,17 @@ data:
           - sh
           - "-c"
           - |
-            # This version uses a 'printf' trick to build the sed command 
-            # so local envsubst doesn't see a "$" it recognizes.
-            SED_CMD=$(printf 's/\\${%s}/%s/g' "CLUSTER_NAME" "$CLUSTER_NAME")
-            find . -name "kustomization.yaml" -exec sed -i "$SED_CMD" {} +
+            # 1. Define the '$' using hex so local envsubst ignores it
+            DOLLAR_SIGN=$(printf '\x24')
             
+            # 2. Construct the literal string '${CLUSTER_NAME}' for sed to find
+            SEARCH_PATTERN="${DOLLAR_SIGN}{CLUSTER_NAME}"
+            
+            # 3. Find and replace in the root kustomization.yaml
+            # This turns 'clusters/${CLUSTER_NAME}' into 'clusters/cluster-fl5kt'
+            find . -name "kustomization.yaml" -exec sed -i "s/${SEARCH_PATTERN}/${CLUSTER_NAME}/g" {} +
+            
+            # 4. Build from the root (.) so 'components/' are visible
             set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsub
       discover:
         find:
