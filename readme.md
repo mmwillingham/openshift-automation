@@ -79,7 +79,7 @@ envsubst < bootstrap/root-application.yaml | oc apply -f -
 
 # CLI
 oc get application -n openshift-gitops
-
+```
 
 ### Steps for adding cluster / application
 #### New cluster
