@@ -18,10 +18,10 @@ spec:
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE ANCHOR: Point to the repository root
+        # THE FIX: Anchor the build to the REPOSITORY ROOT
         path: . 
         kustomize:
-          # Point to the specific overlay, but execute from the root context
+          # Tell Kustomize to build the specific folder while staying in the root context
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
