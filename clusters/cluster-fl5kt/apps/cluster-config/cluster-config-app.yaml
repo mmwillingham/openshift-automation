@@ -5,13 +5,12 @@ metadata:
   namespace: openshift-gitops
 spec:
   project: default
-  sources:
-    - repoURL: https://github.com/mmwillingham/openshift-automation
-      targetRevision: HEAD
-      path: clusters/cluster-fl5kt/overlays/cluster-config
-    - repoURL: https://github.com/mmwillingham/openshift-automation
-      targetRevision: HEAD
-      path: .
+  source:
+    repoURL: https://github.com/mmwillingham/openshift-automation
+    targetRevision: HEAD
+    path: .
+    kustomize:
+      directory: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
     namespace: default
