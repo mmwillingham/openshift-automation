@@ -242,6 +242,9 @@ spec:
     sidecarContainers:
       - name: setenv-plugin
         command: [/var/run/argocd/argocd-cmp-server]
+        env:
+          - name: ARGOCD_PLUGIN_ADDRESS
+            value: "/home/argocd/cmp-server/plugins/setenv-cmp-plugin.sock"
         envFrom:
           - configMapRef:
               name: environment-variables
