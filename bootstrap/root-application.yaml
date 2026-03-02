@@ -6,6 +6,11 @@ metadata:
 spec:
   project: default
   source:
+    plugin:
+      name: setenv-cmp-plugin
+      env:
+        - name: CLUSTER_NAME
+          value: "cluster-fl5kt" # This is what envsub will use
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # Point directly to the cluster folder
