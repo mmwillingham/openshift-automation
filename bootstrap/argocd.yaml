@@ -350,9 +350,8 @@ data:
           - sh
           - "-c"
           - |
-            # Use three backslashes so the sidecar sees a literal \$
-            # Use ${DOLLARSIGN} so your bastion doesn't replace it
-            sed -i "s/\\\\\${DOLLARSIGN}{CLUSTER_NAME}/$CLUSTER_NAME/g" kustomization.yaml
+            # We hide BOTH dollar signs from the bastion using ${DOLLARSIGN}
+            sed -i "s/\\\${DOLLARSIGN}{CLUSTER_NAME}/\${DOLLARSIGN}CLUSTER_NAME/g" kustomization.yaml
             kustomize build --load-restrictor LoadRestrictionsNone .
       # discover:
       #   find:
