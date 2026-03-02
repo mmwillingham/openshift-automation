@@ -12,17 +12,15 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      name: '{{path.basename}}-config'
+      name: '{{path.basename}}-bootstrap' # Named 'bootstrap' to show it's the parent
     spec:
       project: default
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # This points the CLONE to the root so bases are reachable
-        path: . 
-        kustomize:
-          # This tells Kustomize EXACTLY which overlay to build
-          path: '{{path}}/overlays/cluster-config'
+        # Point to the cluster folder (e.g., clusters/cluster-fl5kt)
+        # This will pick up your clusters/cluster-fl5kt/kustomization.yaml
+        path: '{{path}}' 
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops

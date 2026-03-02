@@ -8,9 +8,11 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: .
+    # Anchor to the root so it can find /components/cluster-config
+    path: . 
     kustomize:
-      directory: clusters/cluster-fl5kt/overlays/cluster-config
+      # Use this field to tell Argo where the overlay is relative to the root
+      path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
     namespace: default
