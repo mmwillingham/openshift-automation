@@ -12,18 +12,17 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      # This automatically becomes 'cluster-fl5kt-config'
+      # This becomes 'cluster-fl5kt-config' automatically
       name: '{{path.basename}}-config'
     spec:
       project: default
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE ANCHOR: Point to the repository root (.)
+        # THE FIX: Point to the repository root to keep Kustomize in bounds
         path: . 
         kustomize:
-          # Use the 'path' variable discovered by the generator
-          # This resolves to 'clusters/cluster-fl5kt/overlays/cluster-config'
+          # {{path}} is the actual folder name discovered by Argo CD (e.g. clusters/cluster-fl5kt)
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
