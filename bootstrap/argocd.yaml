@@ -239,6 +239,11 @@ spec:
       g, admin, role:admin
     scopes: "[groups]"
   repo:
+    volumeMounts:
+      - mountPath: /var/run/argocd
+        name: var-files
+      - mountPath: /home/argocd/cmp-server/plugins
+        name: plugins
     sidecarContainers:
       - name: setenv-plugin
         command: [/var/run/argocd/argocd-cmp-server, "--address", "unix:///var/run/argocd/setenv-cmp-plugin.sock"]
