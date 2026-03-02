@@ -9,6 +9,4 @@ resources:
   - apps/openshift-virtualization/openshift-virtualization-operator-app.yaml
   - apps/node-health/node-health-operator-app.yaml
   - apps/node-health/node-health-instance-app.yaml
-
   - apps/compliance/compliance-operator-app.yaml
-  - apps/external-secrets/external-secrets-operator-app.yaml
