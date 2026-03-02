@@ -350,8 +350,9 @@ data:
           - sh
           - "-c"
           - |
-            # We hide BOTH dollar signs from the bastion using ${DOLLARSIGN}
-            sed -i "s/\\\${DOLLARSIGN}{CLUSTER_NAME}/\${DOLLARSIGN}CLUSTER_NAME/g" kustomization.yaml
+            # We hide ONLY the search pattern's dollar sign from the bastion
+            # We let the replacement side be a clean shell variable
+            sed -i "s/\\\${DOLLARSIGN}{CLUSTER_NAME}/$CLUSTER_NAME/g" kustomization.yaml
             kustomize build --load-restrictor LoadRestrictionsNone .
       # discover:
       #   find:
