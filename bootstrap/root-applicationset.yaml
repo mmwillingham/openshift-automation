@@ -4,27 +4,29 @@ metadata:
   name: cluster-bootstrap
   namespace: openshift-gitops
 spec:
-  # The generator finds the directories in your repo
   generators:
     - git:
-        repoURL: https://github.com/mmwillingham/openshift-automation
+        repoURL: ${GITOPS_REPO}
         revision: HEAD
         directories:
           - path: clusters/*
   template:
     metadata:
-      # Use the folder name (e.g., cluster-fl5kt) to name the application
       name: '{{path.basename}}-config'
-      namespace: openshift-gitops
     spec:
       project: default
       source:
-        repoURL: https://github.com/mmwillingham/openshift-automation
+        repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # This points Argo CD directly to the overlay, fixing the pathing issue
-        path: '{{path}}/overlays/cluster-config'
+        # THE FIX: Point to the ROOT of the repo
+        path: .
+        directory:
+          recurse: true
+        kustomize:
+          # Tell Kustomize to build the specific cluster folder
+          # while staying anchored to the root (.)
+          path: '{{path}}/overlays/cluster-config'
       destination:
-        # Since GitOps is local to each cluster, we use the local service address
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
       syncPolicy:
