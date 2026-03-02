@@ -12,17 +12,19 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      # This becomes 'cluster-fl5kt-config' automatically
+      # This automatically becomes 'cluster-fl5kt-config'
       name: '{{path.basename}}-config'
+      namespace: openshift-gitops
     spec:
       project: default
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE FIX: Point to the repository root to keep Kustomize in bounds
+        # THE FIX: Anchor the build to the REPOSITORY ROOT
         path: . 
         kustomize:
-          # {{path}} is the actual folder name discovered by Argo CD (e.g. clusters/cluster-fl5kt)
+          # {{path}} is the actual folder name found in Git (e.g., clusters/cluster-fl5kt)
+          # No more ${CLUSTER_NAME} variables in this path!
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
