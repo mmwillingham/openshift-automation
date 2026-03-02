@@ -68,7 +68,7 @@ envsubst < bootstrap/argocd.yaml | oc apply -f -
 
 #### Install root-application
 ```
-envsubst < bootstrap/root-application.yaml | oc apply -f -
+envsubst < bootstrap/root-applicationset.yaml | oc apply -f -
 ```
 
 #### Monitor
