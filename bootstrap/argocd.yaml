@@ -239,33 +239,6 @@ spec:
       g, admin, role:admin
     scopes: "[groups]"
   repo:
-    sidecarContainers:
-      - name: setenv-plugin
-        command: [/var/run/argocd/argocd-cmp-server]
-        env:
-          - name: ARGOCD_PLUGIN_ADDRESS
-            value: "/home/argocd/cmp-server/plugins/setenv-cmp-plugin.sock"
-        envFrom:
-          - configMapRef:
-              name: environment-variables
-        image: quay.io/argoproj/argocd:v2.10.0
-        volumeMounts:
-          - mountPath: /var/run/argocd
-            name: var-files
-          - mountPath: /home/argocd/cmp-server/plugins
-            name: plugins
-          - mountPath: /tmp
-            name: tmp
-          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-            subPath: plugin.yaml
-            name: setenv-cmp-plugin
-    volumes:
-      - configMap:
-          name: setenv-cmp-plugin
-        name: setenv-cmp-plugin
-    env:
-      - name: KUSTOMIZE_PLUGIN_HOME
-        value: /etc/kustomize/plugin
     resources:
       limits:
         cpu: "1"
@@ -332,44 +305,27 @@ spec:
         memory: 1Gi
     sharding: {}
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: setenv-cmp-plugin
-  namespace: openshift-gitops
-data:
-  plugin.yaml: |
-    apiVersion: argoproj.io/v1alpha1
-    kind: ConfigManagementPlugin
-    metadata:
-      name: setenv-cmp-plugin
-    spec:
-      version: v1.0
-      generate:
-        command:
-          - sh
-          - "-c"
-          - |
-            # 1. We fix the root kustomization file so it points to your cluster.
-            # We use the ${DOLLARSIGN} trick to keep your bastion's hands off it.
-            sed -i 's/${DOLLARSIGN}{CLUSTER_NAME}/'cluster-fl5kt'/g' kustomization.yaml
-            
-            # 2. Build the ROOT. 
-            # Because we are building '.', Kustomize stays within the repo 
-            # and can find the 'components/' folder sitting right there.
-            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
-      #   find:
-      #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
----
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: environment-variables
+#   namespace: openshift-gitops
+# data:
+#   KUSTOMIZE_PLUGIN_HOME: /etc/kustomize/plugin
+#   CLUSTER_NAME: '${CLUSTER_NAME}'
+#   CLUSTER_BASE_DOMAIN: '${CLUSTER_BASE_DOMAIN}'
+#           # all created clusters base domain should be <cluster-name>.<PLATFORM_BASE_DOMAIN>
+#   PLATFORM_BASE_DOMAIN: '${PLATFORM_BASE_DOMAIN}'
+#   INFRA_GITOPS_REPO: '${GITOPS_REPO}'
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: environment-variables
   namespace: openshift-gitops
 data:
-  KUSTOMIZE_PLUGIN_HOME: /etc/kustomize/plugin
-  CLUSTER_NAME: '${CLUSTER_NAME}'
-  CLUSTER_BASE_DOMAIN: '${CLUSTER_BASE_DOMAIN}'
-          # all created clusters base domain should be <cluster-name>.<PLATFORM_BASE_DOMAIN>
-  PLATFORM_BASE_DOMAIN: '${PLATFORM_BASE_DOMAIN}'
-  INFRA_GITOPS_REPO: '${GITOPS_REPO}'
+  # These will be expanded by your bastion's envsubst during apply
+  CLUSTER_NAME: "${CLUSTER_NAME}"
+  CLUSTER_BASE_DOMAIN: "${CLUSTER_BASE_DOMAIN}"
+  PLATFORM_BASE_DOMAIN: "${PLATFORM_BASE_DOMAIN}"
+  INFRA_GITOPS_REPO: "${GITOPS_REPO}"
+  
