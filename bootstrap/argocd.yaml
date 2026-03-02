@@ -239,10 +239,9 @@ spec:
       g, admin, role:admin
     scopes: "[groups]"
   repo:
-    # 1. REMOVE the volumeMounts block that was here
     sidecarContainers:
       - name: setenv-plugin
-        command: [/var/run/argocd/argocd-cmp-server, "--address", "unix:///var/run/argocd/setenv-cmp-plugin.sock"]
+        command: [/var/run/argocd/argocd-cmp-server]
         envFrom:
           - configMapRef:
               name: environment-variables
