@@ -350,10 +350,11 @@ data:
           - sh
           - "-c"
           - |
-            # 1. The sed worked! We keep it.
-            sed -i "s/\\\${CLUSTER_NAME}/cluster-fl5kt/g" kustomization.yaml
-            # 2. Use the 'kustomize build' but ensure we allow the root to see everything
-            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
+            # Step 1: Fix EVERY file in the clone so Kustomize is happy
+            find . -type f -name "*.yaml" -exec sed -i "s/\${CLUSTER_NAME}/$CLUSTER_NAME/g" {} +
+            # Step 2: Run Kustomize on the SUB-DIRECTORY, not the root
+            # This avoids the "is a directory" error and the relative path issues
+            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone clusters/$CLUSTER_NAME/overlays/cluster-config
       # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
