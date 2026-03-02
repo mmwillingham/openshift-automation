@@ -12,7 +12,6 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      # This automatically becomes 'cluster-fl5kt-config'
       name: '{{path.basename}}-config'
       namespace: openshift-gitops
     spec:
@@ -20,11 +19,11 @@ spec:
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE FIX: Anchor the build to the REPOSITORY ROOT
+        # Start at the root to keep Kustomize relative paths in bounds
         path: . 
         kustomize:
-          # {{path}} is the actual folder name found in Git (e.g., clusters/cluster-fl5kt)
-          # No more ${CLUSTER_NAME} variables in this path!
+          # {{path}} is discovered by the generator and becomes "clusters/cluster-fl5kt"
+          # No more ${CLUSTER_NAME} variables here.
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
