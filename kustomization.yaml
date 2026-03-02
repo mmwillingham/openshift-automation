@@ -5,4 +5,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   # Do NOT point to clusters/REPLACE_ME_CLUSTER (it contains the apps folder)
   # Point directly to the infrastructure overlay
-  - clusters/REPLACE_ME_CLUSTER/overlays/cluster-config
+  - clusters/${CLUSTER_NAME}/overlays/cluster-config

@@ -9,7 +9,8 @@ spec:
     repoURL: ${GITOPS_REPO}
     targetRevision: HEAD
     # envsubst will turn this into clusters/cluster-fl5kt
-    path: clusters/${CLUSTER_NAME}
+    path: .
+    #path: clusters/${CLUSTER_NAME}
     plugin:
       # This MUST match the name+version from your sidecar logs
       name: setenv-cmp-plugin-v1.0
