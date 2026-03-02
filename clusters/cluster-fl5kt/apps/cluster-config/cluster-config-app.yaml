@@ -8,13 +8,10 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    # THE CHANGE: Point directly to the overlay folder. 
-    # Do NOT use '.' here anymore.
     path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
-    # This is the destination for the app's metadata
-    namespace: cluster-config 
+    namespace: cluster-config
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
