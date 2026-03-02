@@ -241,11 +241,11 @@ spec:
   repo:
     sidecarContainers:
       - name: setenv-plugin
-        command: [/var/run/argocd/argocd-cmp-server]
+        command: [/var/run/argocd/argocd-cmp-server, "--address", "unix:///var/run/argocd/setenv-cmp-plugin.sock"]
         envFrom:
           - configMapRef:
               name: environment-variables
-        image: quay.io/argoproj/argocd:v2.10.0 
+        image: quay.io/argoproj/argocd:v2.10.0
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: true
@@ -351,18 +351,14 @@ data:
       name: setenv-cmp-plugin
     spec:
       version: v1.0
-      init:
-        command: [sh, -c, 'echo "Initializing setenv-plugin-cmp..."']
       generate:
         command:
           - sh
           - "-c"
-          - |
-            kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | \
-            perl -pe 's/\$\{(\w+)\}/$ENV{$1} // $&/ge'
-      discover:
-        find:
-          command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
+          - "kustomize build --load-restrictor LoadRestrictionsNone . | perl -pe 's/\\$\\{(\\w+)\\}/$ENV{$1} \\/\\/ $&/ge'"
+      # discover:
+      #   find:
+      #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
 ---
 apiVersion: v1
 kind: ConfigMap
