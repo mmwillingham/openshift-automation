@@ -12,7 +12,7 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      name: '0-{{path.basename}}-bootstrap' # Named 'bootstrap' to show it's the parent
+      name: '0-{{path.basename}}-bootstrap'
     spec:
       project: default
       source:
@@ -20,7 +20,7 @@ spec:
         targetRevision: HEAD
         # Point to the cluster folder (e.g., clusters/cluster-fl5kt)
         # This will pick up your clusters/cluster-fl5kt/kustomization.yaml
-        path: '{{path}}' 
+        path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
