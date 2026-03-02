@@ -8,3 +8,4 @@ commonAnnotations:
 resources:
   - ../../../../components/cluster-config
   - enforce-console-plugins.yaml
+  - namespace.yaml
