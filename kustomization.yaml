@@ -6,3 +6,4 @@ resources:
   # Do NOT point to clusters/REPLACE_ME_CLUSTER (it contains the apps folder)
   # Point directly to the infrastructure overlay
   - clusters/${CLUSTER_NAME}/overlays/cluster-config
+  

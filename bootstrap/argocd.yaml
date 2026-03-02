@@ -350,8 +350,8 @@ data:
           - sh
           - "-c"
           - |
-            kustomize build --load-restrictor LoadRestrictionsNone . | \
-            perl -pe 's/\$\{([^}]+)\}/${DOLLARSIGN}ENV{$1} || $&/ge'
+            sed -i "s/\${CLUSTER_NAME}/$CLUSTER_NAME/g" kustomization.yaml
+            kustomize build --load-restrictor LoadRestrictionsNone .
       # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
