@@ -350,9 +350,12 @@ data:
           - sh
           - "-c"
           - |
-            # This hides the $ from envsubst so the CLUSTER lands in the ConfigMap correctly
-            sed -i 's/${DOLLARSIGN}{CLUSTER_NAME}/'$CLUSTER_NAME'/g' kustomization.yaml
-            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
+            # 1. Protect the search pattern with single quotes
+            sed -i 's/${CLUSTER_NAME}/'cluster-fl5kt'/g' kustomization.yaml
+            
+            # 2. Protect the build path with single quotes so envsubst 
+            # doesn't turn it into a static string during the apply
+            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone 'clusters/cluster-fl5kt/overlays/cluster-config'
       # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
