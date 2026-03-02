@@ -8,22 +8,16 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    # The Anchor: Keep this as '.' so Kustomize can reach /components
-    path: . 
-    kustomize:
-      # The Target: Use this specific field to point to your overlay
-      # Ensure there are no leading slashes here
-      path: clusters/cluster-fl5kt/overlays/cluster-config
+    # THE CHANGE: Point directly to the overlay folder. 
+    # Do NOT use '.' here anymore.
+    path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
-    # This is the namespace where the app's resources will land
-    namespace: cluster-config
+    # This is the destination for the app's metadata
+    namespace: cluster-config 
   syncPolicy:
-    automated: 
-      prune: true
-      selfHeal: true
+    automated: { prune: true, selfHeal: true }
     syncOptions:
-      # This triggers the creation of the 'cluster-config' namespace
       - CreateNamespace=true
     retry:
       limit: 5
