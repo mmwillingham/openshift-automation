@@ -350,13 +350,11 @@ data:
           - sh
           - "-c"
           - |
-            # 1. Protect the search pattern with single quotes
-            sed -i 's/${CLUSTER_NAME}/'cluster-fl5kt'/g' kustomization.yaml
+            # Use ${DOLLARSIGN} so the bastion puts a literal $ into the ConfigMap
+            sed -i 's/${DOLLARSIGN}{CLUSTER_NAME}/'cluster-fl5kt'/g' kustomization.yaml
             
-            # 2. Protect the build path with single quotes so envsubst 
-            # doesn't turn it into a static string during the apply
+            # Point directly to the overlay so Kustomize can resolve relative paths
             kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone 'clusters/cluster-fl5kt/overlays/cluster-config'
-      # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
 ---
