@@ -12,7 +12,7 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      name: '{{path.basename}}-bootstrap' # Named 'bootstrap' to show it's the parent
+      name: '0-{{path.basename}}-bootstrap' # Named 'bootstrap' to show it's the parent
     spec:
       project: default
       source:
