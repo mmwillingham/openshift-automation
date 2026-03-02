@@ -5,8 +5,8 @@ resources:
   - apps/cluster-config/cluster-config-app.yaml
   - apps/acm/acm-operator-app.yaml
   - apps/acm/acm-instance-app.yaml
-  # - apps/openshift-virtualization/openshift-virtualization-instance-app.yaml
-  # - apps/openshift-virtualization/openshift-virtualization-operator-app.yaml
+  - apps/openshift-virtualization/openshift-virtualization-instance-app.yaml
+  - apps/openshift-virtualization/openshift-virtualization-operator-app.yaml
   # - apps/node-health/node-health-operators-app.yaml
   # - apps/node-health/node-health-instance-app.yaml
 
