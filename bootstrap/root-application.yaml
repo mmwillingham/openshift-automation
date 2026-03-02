@@ -6,11 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mmwillingham/openshift-automation
+    repoURL: ${GITOPS_REPO}
     targetRevision: HEAD
-    #path: clusters/${CLUSTER_NAME}
-    path: clusters/cluster-fl5kt
+    # envsubst will turn this into clusters/cluster-fl5kt
+    path: clusters/${CLUSTER_NAME}
     plugin:
+      # This MUST match the name+version from your sidecar logs
       name: setenv-cmp-plugin-v1.0
   destination:
     server: https://kubernetes.default.svc
