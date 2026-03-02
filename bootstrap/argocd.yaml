@@ -350,11 +350,14 @@ data:
           - sh
           - "-c"
           - |
-            # Use ${DOLLARSIGN} so the bastion puts a literal $ into the ConfigMap
+            # 1. We fix the root kustomization file so it points to your cluster.
+            # We use the ${DOLLARSIGN} trick to keep your bastion's hands off it.
             sed -i 's/${DOLLARSIGN}{CLUSTER_NAME}/'cluster-fl5kt'/g' kustomization.yaml
             
-            # Point directly to the overlay so Kustomize can resolve relative paths
-            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone 'clusters/cluster-fl5kt/overlays/cluster-config'
+            # 2. Build the ROOT. 
+            # Because we are building '.', Kustomize stays within the repo 
+            # and can find the 'components/' folder sitting right there.
+            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
 ---
