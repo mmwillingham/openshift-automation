@@ -12,6 +12,7 @@ spec:
           - path: clusters/*
   template:
     metadata:
+      # This automatically becomes 'cluster-fl5kt-config'
       name: '{{path.basename}}-config'
     spec:
       project: default
@@ -21,7 +22,8 @@ spec:
         # THE ANCHOR: Point to the repository root (.)
         path: . 
         kustomize:
-          # Tell Kustomize to build the specific folder while staying in the root context
+          # Use the 'path' variable discovered by the generator
+          # This resolves to 'clusters/cluster-fl5kt/overlays/cluster-config'
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
