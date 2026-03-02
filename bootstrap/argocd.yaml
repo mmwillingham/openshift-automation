@@ -239,11 +239,7 @@ spec:
       g, admin, role:admin
     scopes: "[groups]"
   repo:
-    volumeMounts:
-      - mountPath: /var/run/argocd
-        name: var-files
-      - mountPath: /home/argocd/cmp-server/plugins
-        name: plugins
+    # 1. REMOVE the volumeMounts block that was here
     sidecarContainers:
       - name: setenv-plugin
         command: [/var/run/argocd/argocd-cmp-server, "--address", "unix:///var/run/argocd/setenv-cmp-plugin.sock"]
@@ -251,9 +247,6 @@ spec:
           - configMapRef:
               name: environment-variables
         image: quay.io/argoproj/argocd:v2.10.0
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          runAsNonRoot: true
         volumeMounts:
           - mountPath: /var/run/argocd
             name: var-files
@@ -268,12 +261,6 @@ spec:
       - configMap:
           name: setenv-cmp-plugin
         name: setenv-cmp-plugin
-      - emptyDir: {}
-        name: var-files
-      - emptyDir: {}
-        name: plugins
-      - emptyDir: {}
-        name: tmp
     env:
       - name: KUSTOMIZE_PLUGIN_HOME
         value: /etc/kustomize/plugin
