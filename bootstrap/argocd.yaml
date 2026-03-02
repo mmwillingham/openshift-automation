@@ -263,6 +263,12 @@ spec:
       - configMap:
           name: setenv-cmp-plugin
         name: setenv-cmp-plugin
+      - emptyDir: {}
+        name: var-files
+      - emptyDir: {}
+        name: plugins
+      - emptyDir: {}
+        name: tmp
     env:
       - name: KUSTOMIZE_PLUGIN_HOME
         value: /etc/kustomize/plugin
