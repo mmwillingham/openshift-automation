@@ -12,27 +12,20 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      # This becomes 'cluster-fl5kt-config' automatically
       name: '{{path.basename}}-config'
     spec:
       project: default
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE FIX: Anchor the build to the root (.) 
-        # This solves the '../../../../' jumping into /tmp issue.
+        # This makes the ENTIRE REPO the "root" for Kustomize
         path: . 
         kustomize:
-          # {{path}} resolves to the ACTUAL folder name (e.g., clusters/cluster-fl5kt)
-          # We are passing a real string to Kustomize, not a variable.
+          # This tells Argo which specific overlay to run the build command on
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
         retry:
           limit: 5
           backoff:
