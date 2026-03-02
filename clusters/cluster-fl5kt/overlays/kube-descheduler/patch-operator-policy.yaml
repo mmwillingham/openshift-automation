@@ -1,0 +1,10 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: kube-descheduler-operator
+  namespace: open-cluster-management-policies
+spec:
+  subscription:
+    startingCSV: clusterkubedescheduleroperator.v5.3.2
+  versions:
+    - clusterkubedescheduleroperator.v5.3.2

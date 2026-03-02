@@ -14,7 +14,7 @@ spec:
     targetRevision: HEAD
     # path:
     # point to components/<component-name> if nothing needs to be patched
-    # point to clusters/<cluster-name>/<component-name> to apply cluster specific patch
+    # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
     path: clusters/cluster-fl5kt/overlays/openshift-virtualization/operator
   destination:
     server: https://kubernetes.default.svc
