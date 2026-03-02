@@ -11,7 +11,7 @@ spec:
     #path: clusters/${CLUSTER_NAME}
     path: clusters/cluster-fl5kt
     plugin:
-      name: setenv-cmp-plugin
+      name: setenv-cmp-plugin-v1.0
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-gitops
