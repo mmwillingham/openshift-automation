@@ -17,9 +17,8 @@ oc whoami --show-server
 #### Prepare environment file (prepare.env)
 ```
 cat << EOF > prepare.env
-# CLUSTER_NAME used in root-application.yaml and argocd.yaml
+# Used in argocd.yaml and root-applicationset.yaml
 export CLUSTER_NAME=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f2)
-# The remaining used in argocd.yaml
 export CLUSTER_BASE_DOMAIN=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f2-)
 export PLATFORM_BASE_DOMAIN=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | cut -d. -f3-)
 export GITOPS_REPO="https://github.com/mmwillingham/openshift-automation"
