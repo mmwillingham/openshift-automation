@@ -12,16 +12,19 @@ spec:
           - path: clusters/*
   template:
     metadata:
+      # This becomes 'cluster-fl5kt-config' automatically
       name: '{{path.basename}}-config'
     spec:
       project: default
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE CHANGE: We set the path to the ROOT of the repo
+        # THE FIX: Anchor the build to the root (.) 
+        # This solves the '../../../../' jumping into /tmp issue.
         path: . 
         kustomize:
-          # We tell Kustomize which specific folder to build FROM that root
+          # {{path}} resolves to the ACTUAL folder name (e.g., clusters/cluster-fl5kt)
+          # We are passing a real string to Kustomize, not a variable.
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
