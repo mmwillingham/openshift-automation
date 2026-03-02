@@ -18,10 +18,10 @@ spec:
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # Anchoring to the root (.) allows Kustomize to find the /components folder 
+        # This points the CLONE to the root so bases are reachable
         path: . 
         kustomize:
-          # Uses the actual folder name discovered by the generator (e.g., clusters/cluster-fl5kt)
+          # This tells Kustomize EXACTLY which overlay to build
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
