@@ -6,5 +6,5 @@ commonAnnotations:
   argocd.argoproj.io/sync-wave: "0"
 
 resources:
-  - ../../../../../components/cluster-config
+  - ../../../../components/cluster-config
   - enforce-console-plugins.yaml
