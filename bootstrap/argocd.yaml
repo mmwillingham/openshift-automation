@@ -350,10 +350,10 @@ data:
           - sh
           - "-c"
           - |
-            # We hide ONLY the search pattern's dollar sign from the bastion
-            # We let the replacement side be a clean shell variable
-            sed -i "s/\\\${DOLLARSIGN}{CLUSTER_NAME}/$CLUSTER_NAME/g" kustomization.yaml
-            kustomize build --load-restrictor LoadRestrictionsNone .
+            # 1. The sed worked! We keep it.
+            sed -i "s/\\\${CLUSTER_NAME}/cluster-fl5kt/g" kustomization.yaml
+            # 2. Use the 'kustomize build' but ensure we allow the root to see everything
+            kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
       # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
