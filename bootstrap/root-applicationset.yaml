@@ -18,14 +18,22 @@ spec:
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # This makes the ENTIRE REPO the "root" for Kustomize
+        # Anchoring to the root (.) allows Kustomize to find the /components folder 
         path: . 
         kustomize:
-          # This tells Argo which specific overlay to run the build command on
+          # Uses the actual folder name discovered by the generator (e.g., clusters/cluster-fl5kt)
           path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - Validate=false
+          - SkipDryRunOnMissingResource=true
         retry:
           limit: 5
           backoff:
