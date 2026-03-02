@@ -351,7 +351,7 @@ data:
           - "-c"
           - |
             kustomize build --load-restrictor LoadRestrictionsNone . | \
-            perl -pe 's/\$\{([^}]+)\}/\\$ENV{$1} || $&/ge'
+            perl -pe 's/\$\{([^}]+)\}/${DOLLARSIGN}ENV{$1} || $&/ge'
       # discover:
       #   find:
       #     command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
