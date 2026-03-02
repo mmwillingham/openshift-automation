@@ -350,12 +350,8 @@ data:
           - sh
           - "-c"
           - |
-            # Step 1: Fix the root kustomization file. 
-            # We use a backslash before the $ so your bastion ignores it.
-            sed -i "s/\\\${CLUSTER_NAME}/$CLUSTER_NAME/g" kustomization.yaml
-            
-            # Step 2: Run Kustomize from the root, but point to the cluster folder.
-            # This allows Kustomize to find the ../../../components folder.
+            # This hides the $ from envsubst so the CLUSTER lands in the ConfigMap correctly
+            sed -i 's/${DOLLARSIGN}{CLUSTER_NAME}/'$CLUSTER_NAME'/g' kustomization.yaml
             kustomize build --enable-alpha-plugins --load-restrictor LoadRestrictionsNone .
       # discover:
       #   find:
