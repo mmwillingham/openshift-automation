@@ -18,14 +18,8 @@ spec:
       source:
         repoURL: ${GITOPS_REPO}
         targetRevision: HEAD
-        # THE FIX: Point to the ROOT of the repo
-        path: .
-        directory:
-          recurse: true
-        kustomize:
-          # Tell Kustomize to build the specific cluster folder
-          # while staying anchored to the root (.)
-          path: '{{path}}/overlays/cluster-config'
+        # POINT TO THE EXACT FOLDER ONLY
+        path: '{{path}}/overlays/cluster-config'
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
