@@ -8,7 +8,8 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: clusters/${CLUSTER_NAME}
+    #path: clusters/${CLUSTER_NAME}
+    path: clusters/cluster-fl5kt
     plugin:
       name: setenv-cmp-plugin
   destination:
