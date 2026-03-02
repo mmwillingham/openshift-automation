@@ -245,8 +245,8 @@ spec:
         envFrom:
           - configMapRef:
               name: environment-variables
-        image: quay.io/raffaelespazzoli/raffa-envsub:1.1
-        imagePullPolicy: Always
+        image: quay.io/argoproj/argocd:v2.10.0 
+        imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: true
         volumeMounts:
@@ -351,7 +351,9 @@ data:
         command:
           - sh
           - "-c"
-          - "set -o pipefail && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | envsubst"
+          - |
+            kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --enable-alpha-plugins . | \
+            perl -pe 's/\$\{(\w+)\}/$ENV{$1} // $&/ge'
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']
