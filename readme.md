@@ -85,11 +85,8 @@ oc get application -n openshift-gitops
 ##### Make changes in git repository
 ```
 1) Copy/paste from similar cluster
-2) Adjust path in argocd applications
-    # e.g. clusters/<cluster-name>/apps/compliance-operator-app.yaml
-    # path: clusters/<cluster-name>/overlays/compliance/operator
-3) Adjust clusters/<cluster-name>/apps/kustomization.yaml with desired applications
-4) Adjust overlay values if necessary
+2) Adjust clusters/<cluster-name>/kustomization.yaml with desired applications
+3) Adjust overlay values if necessary
     # e.g. clusters/<cluster-name>/overlays/<component>
 ```
 
@@ -99,15 +96,13 @@ oc get application -n openshift-gitops
 Yes>
     Copy/paste from similar application and adjust as necessary
         - components/<component>
-        - cluster/<cluster-name>/apps/<component>
-        - cluster/<cluster-name>/overlays/<component>
+        - apps/<component>
     Update
         - cluster/<cluster-name>/kustomization.yaml
 
 No>
     Copy/paste from similar application and adjust as necessary
         - components/<component>
-        - cluster/<cluster-name>/apps/<component>
     Update
         - cluster/<cluster-name>/kustomization.yaml
 ```
