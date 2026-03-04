@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
 # Environment (dev or prod)
-  - ../env/prod
+  - ../../env/prod
   # - ../env/dev
 
 

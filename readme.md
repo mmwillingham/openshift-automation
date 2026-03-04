@@ -95,14 +95,14 @@ oc get application -n openshift-gitops
 1) Will this application need patching? i.e. adjustments per cluster?
 Yes>
     Copy/paste from similar application and adjust as necessary
-        - base/<component>
+        - components/<component>
         - apps/<component>
     Update
         - cluster/<cluster-name>/kustomization.yaml
 
 No>
     Copy/paste from similar application and adjust as necessary
-        - base/<component>
+        - components/<component>
     Update
         - cluster/<cluster-name>/kustomization.yaml
 ```
