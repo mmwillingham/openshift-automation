@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: acm-operator
+  name: acm-instance
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "5"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -13,9 +13,9 @@ spec:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # path:
-    # point to components/<component-name> if nothing needs to be patched
+    # point to base/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
-    path: clusters/cluster-fl5kt/overlays/acm/operator
+    path: base/acm/instance
   destination:
     server: https://kubernetes.default.svc
     namespace: open-cluster-management

@@ -16,7 +16,7 @@ spec:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
 
-    # If nothing to change--> path: components/<component-name>
+    # If nothing to change--> path: base/<component-name>
     # To adjust values for this cluster--> path: clusters/<cluster-name>/overlays/<component-name>
     path: clusters/CLUSTER-NAME/overlays/openshift-virtualization-operator
   destination:

@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: openshift-virtualization-instance
+  name: kube-descheduler-operator
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "0"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -13,12 +13,12 @@ spec:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # path:
-    # point to components/<component-name> if nothing needs to be patched
+    # point to base/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
-    path: components/openshift-virtualization/instance
+    path: clusters/cluster-fl5kt/overlays/kube-descheduler/operator
   destination:
     server: https://kubernetes.default.svc
-    namespace: openshift-cnv
+    namespace: open-cluster-management-policies
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     retry:
