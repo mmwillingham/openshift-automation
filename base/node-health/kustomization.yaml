@@ -16,3 +16,7 @@ resources:
 
 # Software based
 #  - self-node-remediation-operator.yaml
+
+# Instances
+  - far-template.yaml
+  - node-healthcheck.yaml

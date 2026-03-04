@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: openshift-virtualization-instance
+  name: kube-descheduler-operator
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "5"
@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: type/ove/openshift-virtualization/
+    path: type/prod/kube-descheduler
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-cnv

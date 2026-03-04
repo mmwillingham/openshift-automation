@@ -4,21 +4,18 @@ metadata:
   name: node-health-operators
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "5"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: virt
+  project: default
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    # path:
-    # point to base/<component-name> if nothing needs to be patched
-    # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
-    path: clusters/cluster-fl5kt/overlays/node-health/operator
+    path: type/prod/node-health
   destination:
     server: https://kubernetes.default.svc
-    namespace: open-cluster-management-policies
+    namespace: openshift-cnv
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     retry:

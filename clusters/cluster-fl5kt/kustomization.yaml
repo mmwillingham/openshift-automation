@@ -2,22 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-# Type [acm | ove]
-  - ../../type/acm
-  - ../../type/ove # Using this cluster for both
-
-
-# Environment path [dev | prod]
+# Environment path [sandbox | test | prod]
   - ../../env/prod
 
-
-  # - apps/cluster-config-rename/cluster-config-rename-app.yaml
-  # - apps/acm/acm-operator-app.yaml
-  # - apps/acm/acm-instance-app.yaml
-  # - apps/openshift-virtualization/openshift-virtualization-instance-app.yaml
-  # - apps/openshift-virtualization/openshift-virtualization-operator-app.yaml
-  # - apps/node-health/node-health-operator-app.yaml
-  # - apps/node-health/node-health-instance-app.yaml
-  # - apps/compliance/compliance-operator-app.yaml
-  # - apps/kube-descheduler/kube-descheduler-operator-app.yaml
-  # - apps/kube-descheduler/kube-descheduler-instance-app.yaml
+# Cluster specific resources
+  - acm-app.yaml

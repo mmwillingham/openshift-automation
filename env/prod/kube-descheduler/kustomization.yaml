@@ -2,8 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../../../../base/node-health/operator
+  - ../../../base/kube-descheduler
+
 
 patches:
-  - path: patch-operator-policies.yaml
+  - path: patch-operator-policy.yaml
 
