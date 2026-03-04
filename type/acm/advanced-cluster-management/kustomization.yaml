@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   # - advanced-cluster-management/operator
   # - advanced-cluster-management/instance
-  - acm-operator-app.yaml
-  - acm-instance-app.yaml
+  - advanced-cluster-management/acm-operator-app.yaml
+  - advanced-cluster-management/acm-instance-app.yaml
