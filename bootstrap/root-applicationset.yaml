@@ -4,8 +4,8 @@ metadata:
   name: cluster-config
   namespace: openshift-gitops
 spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
+  # goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
         repoURL: ${GITOPS_REPO}
