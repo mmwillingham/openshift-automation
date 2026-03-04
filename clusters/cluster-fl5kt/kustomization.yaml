@@ -6,4 +6,4 @@ resources:
   - ../../env/prod
 
 # Cluster specific resources
-  - acm-app.yaml
+  - ../../env/prod/acm-app.yaml

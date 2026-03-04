@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: type/prod/node-health
+    path: env/prod/node-health
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-cnv
