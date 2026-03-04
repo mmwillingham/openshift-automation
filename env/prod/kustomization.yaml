@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   # - compliance/operator
-  - operator/compliance-operator-app.yaml
+  - compliance/compliance-operator-app.yaml
 
