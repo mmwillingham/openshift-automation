@@ -14,7 +14,7 @@ spec:
           - path: clusters/*
   template:
     metadata:
-      name: '0-{{path.basename}}-cluster-config'
+      name: '0-cluster-config'
       # the finalizer ensures that when an ApplicationSet is deleted, the corresponding Argo CD Applications are also deleted
       finalizers:
         - resources-finalizer.argocd.argoproj.io
