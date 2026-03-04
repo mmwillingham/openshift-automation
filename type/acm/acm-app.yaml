@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: acm-instance
+  name: acm-operator
   namespace: openshift-gitops
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "0"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: type/acm/advanced-cluster-management/instance/
+    path: type/acm/advanced-cluster-management
   destination:
     server: https://kubernetes.default.svc
     namespace: open-cluster-management

@@ -2,7 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # - advanced-cluster-management/operator
-  # - advanced-cluster-management/instance
-  - advanced-cluster-management/acm-operator-app.yaml
-  - advanced-cluster-management/acm-instance-app.yaml
+  - acm-app.yaml
