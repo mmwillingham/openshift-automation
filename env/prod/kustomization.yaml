@@ -5,5 +5,5 @@ resources:
   - openshift-virtualization-app.yaml
   - kube-descheduler-app.yaml
   - node-health-app.yaml
-  - compliance/compliance-app.yaml
+  - compliance-app.yaml
 
