@@ -12,9 +12,6 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    # path:
-    # point to base/<component-name> if nothing needs to be patched
-    # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
     path: type/ove/openshift-virtualization/instance
   destination:
     server: https://kubernetes.default.svc
