@@ -2,10 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-# Environment (dev or prod)
-  - ../../env/prod/overlays
-  # - ../env/dev
+# Type [acm | ove]
+  - ../../type/acm
+  - ../../type/ove # Using this cluster for both
 
+
+# Environment path [dev | prod]
+  - ../../env/prod
 
 
   # - apps/cluster-config-rename/cluster-config-rename-app.yaml
