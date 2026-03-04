@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - ../../../../base/acm/instance
 
-# patches:
-#   - path: patch-acm-instance.yaml
+patches:
+  - path: patch-acm-instance.yaml
