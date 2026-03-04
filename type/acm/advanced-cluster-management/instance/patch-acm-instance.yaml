@@ -1,8 +1,8 @@
-apiVersion: hco.kubevirt.io/v1beta1
-kind: HyperConverged
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
 metadata:
-  name: kubevirt-hyperconverged
-  namespace: openshift-cnv
+  name: multiclusterhub
+  namespace: open-cluster-management
 spec:
   availabilityConfig: High
   localClusterName: local-cluster
