@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
-    path: clusters/cluster-fl5kt/overlays/cluster-config-rename
+    path: clusters/cluster-fl5kt/overlays/cluster-config
   destination:
     server: https://kubernetes.default.svc
     namespace: cluster-config-rename
