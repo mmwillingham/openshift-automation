@@ -16,7 +16,7 @@ spec:
     # point to base/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
 #    path: clusters/cluster-fl5kt/overlays/acm/operator
-    path: type/acm/overlays/operator
+    path: type/acm/advanced-cluster-management/operator/
   destination:
     server: https://kubernetes.default.svc
     namespace: open-cluster-management
