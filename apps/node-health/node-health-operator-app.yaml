@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-descheduler-operator
+  name: node-health-operators
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: virt
   source:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # path:
-    # point to components/<component-name> if nothing needs to be patched
+    # point to base/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
-    path: clusters/cluster-fl5kt/overlays/kube-descheduler/operator
+    path: clusters/cluster-fl5kt/overlays/node-health/operator
   destination:
     server: https://kubernetes.default.svc
     namespace: open-cluster-management-policies

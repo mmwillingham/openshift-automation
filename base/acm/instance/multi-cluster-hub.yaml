@@ -8,7 +8,7 @@ spec:
   availabilityConfig: High
   localClusterName: local-cluster
   overrides:
-    components:
+    base:
       - configOverrides: {}
         enabled: true
         name: app-lifecycle

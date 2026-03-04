@@ -13,7 +13,7 @@ spec:
     repoURL: https://github.com/mmwillingham/openshift-automation
     targetRevision: HEAD
     # path:
-    # point to components/<component-name> if nothing needs to be patched
+    # point to base/<component-name> if nothing needs to be patched
     # point to clusters/<cluster-name>/overlays/<component-name> to apply cluster specific patch
     path: clusters/cluster-fl5kt/overlays/openshift-virtualization/operator
   destination:
