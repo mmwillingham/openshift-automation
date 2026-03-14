@@ -39,21 +39,31 @@ ocm login --use-device-code
 ### Download pull-secret
 ```
 # Retrieve offline token
-## Extract the offline token from the OCM config
+# 1. Extract Offline Token from the verified RHEL path
 OFFLINE_TOKEN=$(jq -r '.refresh_token' ~/.config/ocm/ocm.json)
 
-## Exchange the offline token for a temporary access token
+# 2. Exchange for Access Token (using the correct ocm-cli client_id)
 ACCESS_TOKEN=$(curl -sX POST https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token \
     -d "grant_type=refresh_token" \
     -d "client_id=ocm-cli" \
     -d "refresh_token=$OFFLINE_TOKEN" | jq -r .access_token)
 
-## Fetch the pull secret JSON payload
+# 3. Fetch the Pull Secret to /tmp
 curl -sX POST -H "Authorization: Bearer $ACCESS_TOKEN" \
     https://api.openshift.com/api/accounts_mgmt/v1/access_token > /tmp/pull-secret.json
 
-## Validate
-jq -e '.auths' /tmp/pull-secret.json > /dev/null && echo "Pull secret is valid."
+# 4. Validate and Load Variables
+if jq -e '.auths' /tmp/pull-secret.json > /dev/null; then
+    echo "Success: Pull secret is valid."
+    
+    # Clean and Export for the installer
+    export PULL_SECRET=$(cat /tmp/pull-secret.json | tr -d '\n\r ')
+    export SSH_PUB_KEY=$(cat ~/.ssh/id_rsa.pub | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    
+    echo "Variables PULL_SECRET and SSH_PUB_KEY are ready."
+else
+    echo "Error: Pull secret download failed. Check your ocm login status."
+fi
 ```
 
 ### Set environment variables and create folder
