@@ -1,13 +1,22 @@
 
-# Download pull secret from console.redhat.com and place in ~/pull-secret
+# Create a cluster
+These commands will create a cluster:
+- AWS
+- IPI
+- dropin manifests that will install
+  - gitops
+  - ACM
 
-# Create ssh key and download clis
+## Steps
+
+### Create ssh key and download clis
 ```
 mkdir -p ~/ocp && cd ~/ocp
 ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_rsa
 curl -L -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.20/openshift-client-linux-4.20.15.tar.gz
 curl -L -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.20/openshift-install-linux.tar.gz
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+curl -L https://github.com/openshift-online/ocm-cli/releases/latest/download/ocm-linux-amd64 -o ocm
 tar -xvf openshift-client-linux-4.20.15.tar.gz
 tar -xvf openshift-install-linux.tar.gz
 sudo dnf install unzip -y
@@ -15,11 +24,39 @@ unzip awscliv2.zip && rm awscliv2.zip
 sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update -y
 sudo mv oc /usr/local/bin
 sudo mv openshift-install /usr/local/bin
+chmod +x ocm
+sudo mv ocm /usr/local/bin/
 rm kubectl
 rm rm *gz
+sudo dnf install jq -y
+```
+### Authenticate and download Red Hat pull-secret
+```
+# Login to Red Hat (follow instructions provided by the command)
+ocm login --use-device-code
 ```
 
-# Set environment variables
+### Download pull-secret
+```
+# Retrieve offline token
+## Extract the offline token from the OCM config
+OFFLINE_TOKEN=$(jq -r '.refresh_token' ~/.config/ocm/ocm.json)
+
+## Exchange the offline token for a temporary access token
+ACCESS_TOKEN=$(curl -sX POST https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token \
+    -d "grant_type=refresh_token" \
+    -d "client_id=ocm-cli" \
+    -d "refresh_token=$OFFLINE_TOKEN" | jq -r .access_token)
+
+## Fetch the pull secret JSON payload
+curl -sX POST -H "Authorization: Bearer $ACCESS_TOKEN" \
+    https://api.openshift.com/api/accounts_mgmt/v1/access_token > /tmp/pull-secret.json
+
+## Validate
+jq -e '.auths' pull-secret.json > /dev/null && echo "Pull secret is valid."
+```
+
+### Set environment variables and create folder
 ```
 #!/bin/bash
 # 1. Set environment variables
@@ -27,8 +64,8 @@ cd ~/ocp
 export CLUSTER_NAME="acm-10"
 export BASE_DOMAIN="sandbox2912.opentlc.com"
 export AWS_REGION="us-east-2"
-export PULL_SECRET=$(echo "$PULL_SECRET" | tr -d '\n\r ')
-export SSH_PUB_KEY=$(echo "$SSH_PUB_KEY" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+export PULL_SECRET=$(cat /tmp/pull-secret.json | tr -d '\n\r ')
+export SSH_PUB_KEY=$(cat ~/.ssh/id_rsa.pub | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 export INSTALL_DIR="./$CLUSTER_NAME"
 echo $CLUSTER_NAME
 echo $BASE_DOMAIN
@@ -37,8 +74,10 @@ echo $SSH_PUB_KEY
 echo $PULL_SECRET
 
 mkdir -p "$CLUSTER_NAME"
+```
 
-# --- GENERATE INSTALL-CONFIG.YAML ---
+### --- GENERATE INSTALL-CONFIG.YAML ---
+```
 cat << EOF > "${INSTALL_DIR}/install-config.yaml"
 apiVersion: v1
 baseDomain: ${BASE_DOMAIN}
@@ -64,16 +103,21 @@ sshKey: |
   ${SSH_PUB_KEY}
 publish: External
 EOF
-
-# Validate yamls
+```
+### Validate yamls
+```
 # Strip non-ASCII/Hidden characters just in case
 sed -i 's/[^[:print:]]//g' "${INSTALL_DIR}/install-config.yaml"
 python3 -c 'import yaml, sys; print(yaml.safe_load(sys.stdin))' < "${INSTALL_DIR}/install-config.yaml"
+```
 
-# --- GENERATE MANIFESTS---
+### --- GENERATE BASE MANIFESTS---
+```
 openshift-install create manifests --dir="${INSTALL_DIR}"
+```
 
-# Note: Create gitops yamls
+# Create gitops yamls
+```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_gitops_ns.yaml"
 apiVersion: v1
 kind: Namespace
@@ -95,8 +139,9 @@ spec:
 EOF
 
 ls "${INSTALL_DIR}"/manifests/*_gitops*.yaml
-
-# create acm yamls
+```
+### create acm yamls
+```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_acm_ns.yaml"
 apiVersion: v1
 kind: Namespace
@@ -157,7 +202,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 EOF
 
-######################
 cat <<'EOF' > "${INSTALL_DIR}/manifests/99_acm_mch_job.yaml"
 apiVersion: batch/v1
 kind: Job
@@ -219,11 +263,15 @@ spec:
 EOF
 
 ls "${INSTALL_DIR}"/manifests/*_acm*.yaml
+```
 
-# Backup the folder as it will be digested and removed
+### Backup the folder as it will be digested and removed
+```
 cp -r "${INSTALL_DIR}" "${INSTALL_DIR}-backup"
+```
 
 # --- DEPLOY ---
+```
 openshift-install create cluster --dir="${INSTALL_DIR}" --log-level=info
 ```
 
