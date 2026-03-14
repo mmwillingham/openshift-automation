@@ -146,7 +146,8 @@ spec:
   sourceNamespace: openshift-marketplace
 EOF
 
-ls "${INSTALL_DIR}"/manifests/*_gitops*.yaml
+echo
+ls -l "${INSTALL_DIR}"/manifests/*_gitops*.yaml
 ```
 ### create acm yamls
 ```
@@ -270,7 +271,8 @@ spec:
           echo "Installation manifest applied successfully."
 EOF
 
-ls "${INSTALL_DIR}"/manifests/*_acm*.yaml
+echo
+ls -l "${INSTALL_DIR}"/manifests/*_acm*.yaml
 ```
 
 ### Backup the folder as it will be digested and removed
