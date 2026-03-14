@@ -68,8 +68,6 @@ fi
 
 ### Set environment variables and create folder
 ```
-#!/bin/bash
-# 1. Set environment variables
 cd ~/ocp
 export CLUSTER_NAME="acm-10"
 export BASE_DOMAIN="sandbox2912.opentlc.com"
