@@ -124,7 +124,7 @@ python3 -c 'import yaml, sys; print(yaml.safe_load(sys.stdin))' < "${INSTALL_DIR
 openshift-install create manifests --dir="${INSTALL_DIR}"
 ```
 
-# Create gitops yamls
+# Create GitOps manifests
 ```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_gitops_ns.yaml"
 apiVersion: v1
@@ -149,7 +149,7 @@ EOF
 echo
 ls -l "${INSTALL_DIR}"/manifests/*_gitops*.yaml
 ```
-### create acm yamls
+### create ACM manifests
 ```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_acm_ns.yaml"
 apiVersion: v1
