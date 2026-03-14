@@ -119,12 +119,12 @@ sed -i 's/[^[:print:]]//g' "${INSTALL_DIR}/install-config.yaml"
 python3 -c 'import yaml, sys; print(yaml.safe_load(sys.stdin))' < "${INSTALL_DIR}/install-config.yaml"
 ```
 
-### --- GENERATE BASE MANIFESTS---
+### Generate base manifests
 ```
 openshift-install create manifests --dir="${INSTALL_DIR}"
 ```
 
-# Create GitOps manifests
+### Create GitOps manifests
 ```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_gitops_ns.yaml"
 apiVersion: v1
@@ -149,7 +149,7 @@ EOF
 echo
 ls -l "${INSTALL_DIR}"/manifests/*_gitops*.yaml
 ```
-### create ACM manifests
+### Create ACM manifests
 ```
 cat <<EOF > "${INSTALL_DIR}/manifests/90_acm_ns.yaml"
 apiVersion: v1
@@ -275,17 +275,17 @@ echo
 ls -l "${INSTALL_DIR}"/manifests/*_acm*.yaml
 ```
 
-### Backup the folder as it will be digested and removed
+### Backup the folder (the original will be digested and removed)
 ```
 cp -r "${INSTALL_DIR}" "${INSTALL_DIR}-backup"
 ```
 
-# --- DEPLOY ---
+### Deploy the cluster
 ```
 openshift-install create cluster --dir="${INSTALL_DIR}" --log-level=info
 ```
 
-# Destroy
+### Destroy
 ```
 # openshift-install destroy cluster --dir="${INSTALL_DIR}" --log-level=info
 # rm -rf "${INSTALL_DIR}"
