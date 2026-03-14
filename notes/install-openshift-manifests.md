@@ -53,7 +53,7 @@ curl -sX POST -H "Authorization: Bearer $ACCESS_TOKEN" \
     https://api.openshift.com/api/accounts_mgmt/v1/access_token > /tmp/pull-secret.json
 
 ## Validate
-jq -e '.auths' pull-secret.json > /dev/null && echo "Pull secret is valid."
+jq -e '.auths' /tmp/pull-secret.json > /dev/null && echo "Pull secret is valid."
 ```
 
 ### Set environment variables and create folder
