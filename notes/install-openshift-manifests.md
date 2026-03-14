@@ -84,7 +84,7 @@ echo $PULL_SECRET
 mkdir -p "$CLUSTER_NAME"
 ```
 
-### --- GENERATE INSTALL-CONFIG.YAML ---
+### Generate install-config.yaml
 ```
 cat << EOF > "${INSTALL_DIR}/install-config.yaml"
 apiVersion: v1
