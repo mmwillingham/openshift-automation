@@ -245,3 +245,70 @@ EOF
 oc get secret synced-db-secret -n vso-demo-space
 oc extract secret/synced-db-secret -n vso-demo-space --to=-
 ```
+
+## Test changing a secret
+```
+# In one window, keep watching secret
+oc get secret synced-db-secret -n vso-demo-space -w
+
+# Change the password
+## from UI by creating a new version
+## from cli:
+oc exec vault-0 -n vault-system -- vault kv put dev/my-project/database \
+    username="db-admin" \
+    password="NewStrongPassword2026"
+
+# Check oc get secrets. A new item will be created
+oc get secret synced-db-secret -n vso-demo-space -w
+NAME               TYPE     DATA   AGE
+synced-db-secret   Opaque   3      5m12s
+synced-db-secret   Opaque   3      8m59s
+
+oc extract secret/synced-db-secret -n vso-demo-space --to=-
+
+```
+
+## Will app pickup the change?
+```
+1. No. If your Pod is configured like this: (Kubernetes only reads that value at the moment the Pod starts)
+env:
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: synced-db-secret
+        key: password
+
+Restart pod to take effect
+
+2. Eventually (but with a 60-90sec delay). If you mounted the secret as a file:
+volumeMounts:
+- name: config
+  mountPath: "/etc/config"
+  readOnly: true
+volumes:
+- name: config
+  secret:
+    secretName: synced-db-secret
+
+3. Immediately if yoiu configure app to restart anytime a secret changes
+Add this to your VaultStaticSecret definition:
+spec:
+  # ... other fields ...
+  destination:
+    name: synced-db-secret
+    create: true
+    # This is the "Magic" flag:
+    transformation:
+      templates:
+        # (Advanced: helps format the secret for the app)
+  # Link it to your Deployment
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: my-app-deployment
+
+# Verify in demo
+# If you used the Sidecar (the 'database' file):
+oc exec vault-final-test -n my-namespace -c alpine -- cat /vault/secrets/database
+
+# If you are checking the VSO synced secret manually:
+oc extract secret/synced-db-secret -n vso-demo-space --to=-
