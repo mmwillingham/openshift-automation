@@ -1,5 +1,5 @@
-# Install Vault Dev
-#### Note: This is insecure. Use for dev testing only.
+# Install Vault on standalone RHEL in persistent mode
+# For convenience but lower security, I added an unseal script with the unseal key within. Do not do in production.
 #### Docs: https://developer.hashicorp.com/vault/install
 
 ## Install
@@ -10,6 +10,144 @@ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashi
 sudo yum -y install vault
 vault -version
 ```
+
+## Create persistent storage directories
+```
+sudo mkdir -p /opt/vault/data
+sudo mkdir -p /etc/vault.d
+```
+
+## Set ownership
+```
+sudo chown -R vault:vault /opt/vault
+sudo chown -R vault:vault /etc/vault.d
+```
+
+## Configure HCL file
+```
+cat <<EOF | sudo tee /etc/vault.d/vault.hcl
+storage "file" {
+  path = "/opt/vault/data"
+}
+
+listener "tcp" {
+  address     = "0.0.0.0:8200"
+  tls_disable = 1
+}
+
+ui = true
+disable_mlock = true
+EOF
+```
+
+## Create systemd service
+```
+cat <<EOF | sudo tee /etc/systemd/system/vault.service
+[Unit]
+Description="HashiCorp Vault - A tool for managing secrets"
+Documentation=https://www.vaultproject.io/docs/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/vault.d/vault.hcl
+
+[Service]
+User=vault
+Group=vault
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+SecureBits=keep-caps
+AmbientCapabilities=CAP_IPC_LOCK
+Capabilities=CAP_IPC_LOCK+ep
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+NoNewPrivileges=yes
+ExecStart=/usr/bin/vault server -config=/etc/vault.d/vault.hcl
+ExecReload=/bin/kill --signal HUP \$MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now vault
+
+# Check status. Should be active but report that seal is not initialized
+sudo systemctl status vault
+```
+
+## One-time initialization
+```
+export VAULT_ADDR="http://127.0.0.1:8200"
+
+# Initialize with 1 key share
+vault operator init -key-shares=1 -key-threshold=1
+
+# CRITICAL: Copy the Unseal Key 1 and the Initial Root Token to a notepad. You need them for the next step.
+```
+
+## Create unseal script
+```
+cat <<EOF | sudo tee /usr/local/bin/vault-unseal.sh
+#!/bin/bash
+export VAULT_ADDR="http://127.0.0.1:8200"
+until curl -s \$VAULT_ADDR/v1/sys/health > /dev/null; do
+  sleep 1
+done
+# REPLACE THE KEY BELOW
+vault operator unseal PASTE_YOUR_UNSEAL_KEY_HERE
+EOF
+
+sudo chown vault:vault /usr/local/bin/vault-unseal.sh
+sudo chmod 700 /usr/local/bin/vault-unseal.sh
+```
+
+## Enable and start vault
+```
+# Add the post-start trigger to the service file
+sudo sed -i '/ExecStart=\/usr\/bin\/vault server/a ExecStartPost=/usr/local/bin/vault-unseal.sh' /etc/systemd/system/vault.service
+
+sudo systemctl daemon-reload
+sudo systemctl restart vault
+
+# Check status
+sudo systemctl status vault
+```
+
+## Verify Unseal (Look for "Sealed: false")
+```
+export VAULT_ADDR="http://127.0.0.1:8200"
+vault status
+```
+
+## For added security, only allow access from desired networks
+```
+# Allow the OpenShift API/Nodes subnet to access Vault
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.10.0/24" port protocol="tcp" port="8200" accept'
+sudo firewall-cmd --reload
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Run
 ```

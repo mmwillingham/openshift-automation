@@ -22,4 +22,8 @@ metadata:
   namespace: vault-auth
 spec:
   address: http://bastion.2vccz.sandbox5190.opentlc.com:8200 # $VAULT_ADDR
+  # caCert: |                            # Add Root CA here
+  #   -----BEGIN CERTIFICATE-----
+  #   ...
+  #   -----END CERTIFICATE-----
  
