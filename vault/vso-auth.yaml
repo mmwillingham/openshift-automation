@@ -1,0 +1,25 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: static-auth
+  namespace: vault-auth
+spec:
+  method: kubernetes
+  mount: cluster-2vccz # must be same as $CLUSTER_NAME in seed-vault.sh
+  allowedNamespaces:
+    - "vso-demo-space"
+    - "my-namespace" # Add any other namespaces you authorized in Vault
+  kubernetes:
+    role: webapp-role
+    serviceAccount: default
+  vaultConnectionRef: external-vault-connection
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: external-vault-connection
+  namespace: vault-auth
+spec:
+  address: http://bastion.2vccz.sandbox5190.opentlc.com:8200 # $VAULT_ADDR
+ 

@@ -66,40 +66,35 @@ vault login
 ## identity_policies    []
 ## policies             ["root"]
 ```
-## Enable kubernetes auth method
-```
-vault auth enable kubernetes
-or
-vault auth enable -path demo-auth-mount kubernetes
-```
 
 ## Connect to UI
 ```
 # Vault is running on a bastion. Here are the steps for connecting from my laptop
-## From laptop
-ssh -4 -L 8200:127.0.0.1:8200 lab-user@bastion.2vccz.sandbox5190.opentlc.com
-## From laptop's browser
-http://127.0.0.1:8200
+## In AWS, add 8200 and http to bastion SG
+## Access from laptop's browser
+http://bastion.2vccz.sandbox5190.opentlc.com:8200
 ## in UI, login with different methods:
-- token (use root token or one of those created above)
+- token (use root token)
 ```
+
 ## Create Secrets Engine (UI)
 ```
 # Secrets Engine > Enable New Engine > KV (generic)
-## kv/org # user-defined
+## kv/dev # user-defined
 ```
+
 ## Create Secret (UI)
 ```
 # DEV
-# Secrets Engine > kv/org > Create Secret
-## Path: dev
+# Secrets Engine > kv/dev > Create Secret
+## Path: cluster01
 ## Secret Data: <key> <value>
 ## Save
 ## Optionally add a new version
 
 # PROD
-# Secrets Engine > kv/org > Create Secret
-## Path: prod
+# Secrets Engine > kv/dev > Create Secret
+## Path: cluster02
 ## Secret Data: <key> <value>
 ## Save
 ```

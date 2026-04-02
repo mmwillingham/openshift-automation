@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vault-test-app
+  namespace: vso-demo-space
+spec:
+  containers:
+  - name: alpine
+    image: registry.redhat.io/ubi9/ubi-minimal:latest
+    command: ["/bin/sh", "-c", "echo 'My password is: ' $DB_PASSWORD && sleep 3600"]
+    env:
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: k8s-app-secret
+          key: password
