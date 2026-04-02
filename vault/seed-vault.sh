@@ -1,7 +1,7 @@
 #!/bin/bash
 # --- RUN INSIDE CI/CD PIPELINE ---
 
-# Prerequisites if running manually
+# Prerequisites if running manually. When automating, these values should be stored in CI/CD secrets/variables
 # export VAULT_TOKEN=<MY TOKEN>
 # export VAULT_ADDR="http://bastion.2vccz.sandbox5190.opentlc.com:8200"
 
@@ -26,8 +26,8 @@ curl --request POST \
     --data "{\"type\": \"kubernetes\", \"description\": \"Auth for $CLUSTER_NAME\"}" \
     "$VAULT_ADDR/v1/sys/auth/$CLUSTER_NAME"
 
-# Build the Configuration Payload (using 'jq' for safety)
-# This handles the newline escaping for the CA certificate
+# Build the Configuration Payload
+# jq handles the newline escaping for the CA certificate
 export PAYLOAD=$(jq -n \
     --arg host "$OCP_API" \
     --arg cacert "$(echo $CA_CERT_B64 | base64 -d)" \
