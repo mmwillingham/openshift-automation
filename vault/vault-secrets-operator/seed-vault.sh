@@ -19,6 +19,9 @@ export REVIEWER_TOKEN=$(oc get secret vault-reviewer-token -n vault-auth -o json
 # echo $CA_CERT_B64
 # echo $REVIEWER_TOKEN
 
+# Ensure token is valid
+vault token lookup
+
 # Enable the Kubernetes Auth Path on External Vault
 # We use a unique path so Vault can handle multiple clusters
 curl --request POST \
