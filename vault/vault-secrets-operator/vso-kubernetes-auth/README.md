@@ -1,4 +1,5 @@
-# Configure Vault Secrets Operator
+# Configure Vault Secrets Operator using kubernetes authorization
+## Prerequisites
 - Vault server running externally
 
 ## Bootstrap VSO

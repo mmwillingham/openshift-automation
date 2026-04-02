@@ -1,0 +1,33 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: static-auth
+  namespace: vault-auth
+spec:
+  method: jwt 
+  mount: jwt 
+  allowedNamespaces:
+    - "vso-demo-space"
+    - "my-namespace"
+  jwt:
+    # This matches 'ocp-role-$NS' we created in the loop
+    # If the operator is in a specific namespace, use that role name
+    role: ocp-role-vso-demo-space 
+    serviceAccount: default
+  vaultConnectionRef: external-vault-connection
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: external-vault-connection
+  namespace: vault-auth
+spec:
+  # Matches $VAULT_ADDR
+  address: http://bastion.2vccz.sandbox5190.opentlc.com:8200 # $VAULT_ADDR
+  # --- PRODUCTION CONFIGURATION ---
+  # To enable TLS, uncomment the section below and point to the CA secret:
+  # caCertSecretRef:
+  #   name: vault-ca-cert
+  #   key: ca.crt
+ 
