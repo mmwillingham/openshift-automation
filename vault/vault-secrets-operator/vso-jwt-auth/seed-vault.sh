@@ -111,7 +111,7 @@ curl -s --request POST --header "X-Vault-Token: $VAULT_TOKEN" \
     --data '{"type": "kv-v2"}' "$VAULT_ADDR/v1/sys/mounts/$SECRET_ENGINE" || true
 
 curl -s --request POST --header "X-Vault-Token: $VAULT_TOKEN" \
-    --data '{"data": {"test-api-key": "oidc-verified-secret-999", "tst-db-pass": "MyP@ssword1sJust0K"}}' \
+    --data '{"data": {"test-api-key": "oidc-verified-secret-999", "password": "MyP@ssword1sJust0K"}}' \
     "$VAULT_ADDR/v1/$DATA_PATH/test-secret"
 
 echo "Success: Vault configuration synced."
