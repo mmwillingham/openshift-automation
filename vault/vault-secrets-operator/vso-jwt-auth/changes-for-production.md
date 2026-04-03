@@ -1,10 +1,9 @@
 # Vault Secrets Operator (VSO) on OpenShift: Engineering Journal
 
-## 1. Executive Summary
-This document details the successful integration of HashiCorp Vault with an OpenShift cluster using the Vault Secrets Operator (VSO). It covers the transition from a failing OIDC configuration to a functional JWT-based authentication flow and provides a roadmap for production hardening.
 
-## 2. The Sandbox Challenge
-The initial attempt to sync secrets failed due to a "handshake" mismatch between OpenShift's ServiceAccount tokens and Vault's expectations.
+This document details the successful integration of HashiCorp Vault with an OpenShift cluster using the Vault Secrets Operator (VSO).
+
+The initial attempt to sync secrets failed due to a handshake mismatch between OpenShift's ServiceAccount tokens and Vault's expectations.
 
 ### Phase 1: Identifying the Failure
 * **Error:** `400 Bad Request: claim "/kubernetes.io/serviceaccount/namespace" is missing`
@@ -13,10 +12,10 @@ The initial attempt to sync secrets failed due to a "handshake" mismatch between
 * **Cause:** The Operator authenticated successfully but lacked the specific permissions to maintain its own session.
 
 ### Phase 2: The Working Solution
-To resolve these, we moved to a **JWT Auth Method** with a "Zero-Footprint" claim strategy.
+To resolve, moved to a **JWT Auth Method** with a "Zero-Footprint" claim strategy.
 
 #### Updated Policy (`vso-demo-policy`)
-We added lifecycle permissions to the Vault policy so the Operator could renew its lease.
+Added lifecycle permissions to the Vault policy so the Operator could renew its lease.
 ```hcl
 # Allow VSO to manage its own token lifecycle
 path "auth/token/renew-self" {
@@ -49,7 +48,7 @@ ROLE_PAYLOAD=$(jq -n \
     }')
 ```
 
-## 3. The Working Scripts (Current State)
+## Current State
 seed-vault.sh (Core Infrastructure)
 This script wipes the environment and re-seeds the JWT mount and Secret Engine.
 
@@ -63,30 +62,24 @@ This script maps specific OpenShift namespaces to Vault roles.
 Key Action: Creates a unique role for each namespace (ocp-role-vso-demo-space).
 
 ## 4. Production Hardening Guide
-While the sandbox uses "Wide Open" claims and HTTP for speed, a real customer environment requires the following four pillars of hardening.
+While the sandbox uses wide-open claims and HTTP for speed, a real customer environment requires the following four pillars of hardening.
 
-Pillar 1: Strict Claim Validation
+Strict Claim Validation
 Goal: Prevent unauthorized pods from assuming the Operator's role.
-
 Action: Re-enable bound_claims in the JWT role.
 
-Pillar 2: End-to-End TLS
+End-to-End TLS
 Goal: Protect secrets from network sniffing.
-
 Action: Enable TLS on the Vault bastion.
-
 Logic: Update the VaultAuth resource in OpenShift to include the caBundle for certificate verification.
 
-Pillar 3: Path Isolation
+Path Isolation
 Goal: Limit the "blast radius" of a security breach.
-
 Action: Scope policies to specific application paths.
-
 Logic: Use prod/data/apps/{{app_name}}/* instead of broad wildcards.
 
-Pillar 4: Governance & Audit
+Governance & Audit
 Goal: Create a forensic trail of secret access.
-
 Action: Enable Vault Audit Devices.
 
 ## 5. Comparison: Sandbox vs. Production
