@@ -2,6 +2,7 @@
 
 ## Create json that contains new realm and user
 ```
+mkdir /home/lab-user/keycloak:wq
 
 cat <<EOF > /home/lab-user/keycloak/customer-corp-realm.json
 {
