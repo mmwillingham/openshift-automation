@@ -116,6 +116,11 @@ curl -s --request POST --header "X-Vault-Token: $VAULT_TOKEN" \
 
 echo "Success: Vault configuration synced."
 
+# 8. VERIFY SECRET
+curl -s --header "X-Vault-Token: $VAULT_TOKEN" \
+  "$VAULT_ADDR/v1/$DATA_PATH/test-secret" | jq .data.data
+
+# 9. AUTHORIZE OCP NAMESPACES
 if [ -f "./authorize-ns-vault.sh" ]; then
     ./authorize-ns-vault.sh
 fi
