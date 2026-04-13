@@ -97,7 +97,7 @@ sudo podman exec -it keycloak /opt/keycloak/bin/kcadm.sh get realms/master | gre
 sudo podman start keycloak
 ```
 
-## Retrieve keycloak client_id
+## Retrieve keycloak client_secret. This will be used in the VSO configuration
 ```
 # Retrieve all client_ids
 sudo podman exec -it keycloak /bin/bash -c "
@@ -117,6 +117,19 @@ sudo podman exec -it keycloak /bin/bash -c "
     -r customer-corp \
     -q clientId=vault-cluster-client \
     --fields clientId,id"
+
+# 1. Get the UUID and Secret in one flow
+CLIENT_SECRET=$(sudo podman exec -it keycloak /bin/bash -c "
+  /opt/keycloak/bin/kcadm.sh config credentials \
+    --server http://localhost:8080 --realm master \
+    --user admin --password admin > /dev/null && \
+  CLIENT_UUID=\$(/opt/keycloak/bin/kcadm.sh get clients -r customer-corp -q clientId=vault-cluster-client --fields id --format csv --noquotes) && \
+  /opt/keycloak/bin/kcadm.sh get clients/\$CLIENT_UUID/client-secret -r customer-corp --fields value --format csv --noquotes" | tr -d '\r')
+
+# 2. Verify it worked
+echo "Retrieved Secret: $CLIENT_SECRET"
+Retrieved Secret: Logging into http://localhost:8080 as user admin of realm master
+
 ```
 
 
