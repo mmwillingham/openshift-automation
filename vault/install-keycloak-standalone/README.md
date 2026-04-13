@@ -133,32 +133,16 @@ Retrieved Secret: Logging into http://localhost:8080 as user admin of realm mast
 ```
 
 
-<!-- # 
-# Update vault stuff
+## Open AWS firewall
 ```
+aws ec2 authorize-security-group-ingress \
+    --group-id $SG_ID \
+    --protocol tcp \
+    --port 8080 \
+    --cidr 0.0.0.0/0
 
+# Verify
+aws ec2 describe-security-groups \
+    --group-ids $SG_ID \
+    --query "SecurityGroups[0].IpPermissions[?ToPort==\`8080\`]"
 ```
-
-## Update vault-auth.yaml
-```
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultAuth
-metadata:
-  name: static-auth
-  namespace: vso-system # Or your VSO namespace
-spec:
-  method: jwt           # CHANGED from kubernetes
-  mount: jwt-oidc       # Matches the 'path' in seed-vault.sh
-  vaultConnectionRef: vault-connection
-  jwt:
-    role: ocp-cluster-role
-    tokenSource:
-      serviceAccountToken:
-        audiences: 
-          - "vault-cluster-client" # Must match Keycloak Client ID
-```
-
-## remove unneeded prep
-```
-rm vault-auth-infra.yaml
-``` -->
