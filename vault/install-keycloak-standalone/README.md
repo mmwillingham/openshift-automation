@@ -92,6 +92,34 @@ sudo podman exec -it keycloak /bin/bash -c "
 sudo podman exec -it keycloak /opt/keycloak/bin/kcadm.sh get realms/master | grep sslRequired
 ```
 
+## Restart keycloak if necessary
+```
+sudo podman start keycloak
+```
+
+## Retrieve keycloak client_id
+```
+# Retrieve all client_ids
+sudo podman exec -it keycloak /bin/bash -c "
+  /opt/keycloak/bin/kcadm.sh config credentials \
+    --server http://localhost:8080 --realm master \
+    --user admin --password admin && \
+  /opt/keycloak/bin/kcadm.sh get clients \
+    -r customer-corp \
+    --fields clientId,id"
+
+# Retrieve client_id only for vault-cluster-client
+sudo podman exec -it keycloak /bin/bash -c "
+  /opt/keycloak/bin/kcadm.sh config credentials \
+    --server http://localhost:8080 --realm master \
+    --user admin --password admin && \
+  /opt/keycloak/bin/kcadm.sh get clients \
+    -r customer-corp \
+    -q clientId=vault-cluster-client \
+    --fields clientId,id"
+```
+
+
 <!-- # 
 # Update vault stuff
 ```
