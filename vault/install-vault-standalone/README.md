@@ -2,6 +2,8 @@
 - For convenience but lower security, I added an unseal script with the unseal key within. Do not do in production.
 - These steps will work for kuberneted and jwt/oidc auth
 
+## Set vars
+VAULT_ADDR="http://bastion.t6mtb.sandbox2964.opentlc.com:8200"
 
 ## Install
 ```
@@ -126,6 +128,22 @@ sudo systemctl status vault
 ```
 export VAULT_ADDR="http://127.0.0.1:8200"
 vault status
+```
+
+## Open AWS firewall
+```
+aws configure # Use information from Demo Platform
+SG_ID=$(aws ec2 describe-instances --query "Reservations[0].Instances[0].SecurityGroups[0].GroupId" --output text)
+echo $SG_ID
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 8200 --cidr 0.0.0.0/0
+curl -v -m 5 $VAULT_ADDR/v1/sys/health
+
+# Verify
+aws ec2 describe-security-groups \
+    --group-ids $SG_ID \
+    --query "SecurityGroups[0].IpPermissions[?ToPort==\`8200\`]"
+
+
 ```
 
 ## For added security, only allow access from desired networks
