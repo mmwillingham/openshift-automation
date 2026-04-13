@@ -135,6 +135,8 @@ Retrieved Secret: Logging into http://localhost:8080 as user admin of realm mast
 
 ## Open AWS firewall
 ```
+SG_ID=$(aws ec2 describe-instances --query "Reservations[0].Instances[0].SecurityGroups[0].GroupId" --output text)
+echo $SG_ID
 aws ec2 authorize-security-group-ingress \
     --group-id $SG_ID \
     --protocol tcp \
