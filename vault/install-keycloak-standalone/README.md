@@ -7,9 +7,66 @@ mkdir /home/lab-user/keycloak
 # Set the hostname variable first (ensure this matches your current lab)
 BASTION_HOST="bastion.t6mtb.sandbox2964.opentlc.com"
 
-mkdir -p /home/lab-user/keycloak
-
-bastion.t6mtb.sandbox2964.opentlc.com
+cat <<EOF > /home/lab-user/keycloak/customer-corp-realm.json
+{
+  "realm": "customer-corp",
+  "enabled": true,
+  "sslRequired": "none",
+  "attributes": {
+    "frontendUrl": "http://${BASTION_HOST}:8080/"
+  },
+  "users": [
+    {
+      "username": "admin-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["admin"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "admin" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "vault-cluster-client",
+      "name": "Vault Cluster Authentication",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "ksNykkjsPmrLePd98NzvNynxSTCyEt2wP94ApbEXobU=",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "rootUrl": "http://${BASTION_HOST}:8200",
+      "redirectUris": [
+          "http://${BASTION_HOST}:8200/ui/vault/auth/oidc/oidc/callback",
+          "http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback"
+      ],
+      "webOrigins": ["*"],
+      "protocolMappers": [
+          {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+              "included.client.audience": "vault-cluster-client",
+              "id.token.claim": "true",
+              "access.token.claim": "true"
+          }
+          }
+        ]
+      }
+  ]
+}
+EOF
 ```
 
 ## Create keycloak pod and import json
