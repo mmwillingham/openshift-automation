@@ -4,63 +4,12 @@
 ```
 mkdir /home/lab-user/keycloak
 
-cat <<EOF > /home/lab-user/keycloak/customer-corp-realm.json
-{
-  "realm": "customer-corp",
-  "enabled": true,
-  "sslRequired": "none",
-  "users": [
-    {
-      "username": "admin-user",
-      "enabled": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "password123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["admin"]
-    }
-  ],
-  "roles": {
-    "realm": [
-      { "name": "admin" }
-    ]
-  },
-  "clients": [
-    {
-      "clientId": "vault-cluster-client",
-      "name": "Vault Cluster Authentication",
-      "enabled": true,
-      "protocol": "openid-connect",
-      "publicClient": false,
-      "secret": "ksNykkjsPmrLePd98NzvNynxSTCyEt2wP94ApbEXobU=",
-      "serviceAccountsEnabled": true,
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": true,
-      "rootUrl": "http://bastion.2vccz.sandbox5190.opentlc.com:8200",
-      "redirectUris": [
-          "http://bastion.2vccz.sandbox5190.opentlc.com:8200/ui/vault/auth/oidc/oidc/callback",
-          "http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback"
-      ],
-      "webOrigins": ["*"],
-      "protocolMappers": [
-          {
-          "name": "audience",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-audience-mapper",
-          "config": {
-              "included.client.audience": "vault-cluster-client",
-              "id.token.claim": "true",
-              "access.token.claim": "true"
-          }
-          }
-        ]
-      }
-  ]
-}
-EOF
+# Set the hostname variable first (ensure this matches your current lab)
+BASTION_HOST="bastion.t6mtb.sandbox2964.opentlc.com"
+
+mkdir -p /home/lab-user/keycloak
+
+bastion.t6mtb.sandbox2964.opentlc.com
 ```
 
 ## Create keycloak pod and import json
@@ -71,7 +20,7 @@ sudo podman run -d \
   -p 8080:8080 \
   -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
   -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
-  -e KC_HOSTNAME=bastion.2vccz.sandbox5190.opentlc.com \
+  -e KC_HOSTNAME=bastion.t6mtb.sandbox2964.opentlc.com \
   -e KC_HOSTNAME_STRICT=false \
   -e KC_HOSTNAME_STRICT_HTTPS=false \
   -e KC_HTTP_ENABLED=true \
